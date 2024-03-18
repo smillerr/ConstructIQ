@@ -1,4 +1,12 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-cd frontend
-npm run build
+
+# Get the list of files staged for commit
+staged_files=$(git diff --cached --name-only)
+
+# Check if any of the staged files are within the frontend directory
+# and not in the .husky directory inside frontend
+if echo "$staged_files" | grep -q "^frontend/" && ! echo "$staged_files" | grep -q "^frontend/.husky/"; then
+  # Run the build script
+  cd frontend
+  npm run build
+fi
