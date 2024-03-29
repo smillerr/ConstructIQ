@@ -1,5 +1,5 @@
 const Gerente = () => {
-  return <div>This will be the dashboard for the Gerente</div>
+  return <p>Dashboard para el gerente</p>
 }
 
 export default Gerente
