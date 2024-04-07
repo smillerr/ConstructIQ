@@ -34,10 +34,13 @@ const UserList = () => {
     <div className="text-gray-900 bg-gray-50 rounded">
       <div className="p-4 flex justify-between">
         <h1 className="text-3xl">Gestion de usuarios</h1>
-        <button className="flex items-center justify-center mr-3 text-sm bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+        <Link
+          href={'/home/crear-usuario'}
+          className="flex items-center justify-center mr-3 text-sm bg-green-600 hover:bg-green-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+        >
           <PlusIcon className="h-5 w-5 text-white-600" />
           <p className="hidden ml-1 md:block"> Crear usuario </p>
-        </button>
+        </Link>
       </div>
 
       <div className="px-3 py-4 flex justify-center">
