@@ -9,6 +9,12 @@ class Usuario(models.Model):
     genero = models.CharField(max_length=10)
     direccion = models.CharField(max_length=100)
     celular = models.CharField(max_length=20)
+    numero_identificacion = models.CharField(max_length=50, default='1111509876')
+    TIPOS_IDENTIFICACION = (
+        ('Cedula', 'Cedula'),
+        ('TI', 'TI'),
+    )
+    tipo_identificacion = models.CharField(max_length=20, choices=TIPOS_IDENTIFICACION)
     TIPOS_USUARIO = (
         ('Gerente', 'Gerente'),
         ('Director de obra', 'Director de obra'),
@@ -18,6 +24,8 @@ class Usuario(models.Model):
     )
     tipo_usuario = models.CharField(max_length=20, choices=TIPOS_USUARIO)
     activo = models.BooleanField(default=True)
+    
+
 
 class Obra(models.Model):
     nombre = models.CharField(max_length=100)
