@@ -1,17 +1,29 @@
 'use client'
-import { LockClosedIcon } from '@heroicons/react/24/outline'
-// import { useForm } from 'react-hook-form'
+import userSchema from '@/lib/Validators/create-user'
+import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import ErrorMessage from '../common/Forms/ErrorMessage'
 const UserForm = () => {
-  /* const {
+  const schema = userSchema
+  const {
     register,
     handleSubmit,
-    watch,
+    //watch,
     formState: { errors },
-  } = useForm() */
+  } = useForm({ resolver: yupResolver(schema) })
+
+  const errorInputClasses =
+    'border-red-400 focus:border-red-400  focus:ring-red-400'
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
-        <form className="h-full">
+        <form
+          className="h-full"
+          onSubmit={handleSubmit((data) => {
+            console.log('data', data)
+          })}
+        >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
             <div className="w-full">
               <label
@@ -33,7 +45,13 @@ const UserForm = () => {
                   />
                 </svg>
                 <h2 className="mx-3 text-gray-400">Profile Photo</h2>
-                <input id="dropzone-file" type="file" className="hidden" />
+                <input
+                  id="dropzone-file"
+                  type="file"
+                  className="hidden"
+                  defaultValue="picture"
+                  {...register('foto_perfil')}
+                />
               </label>
               {/*NOMBRE Y APELLIDO */}
               <div className="relative flex items-center mt-4">
@@ -55,11 +73,12 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11  
-               focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.nombre?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Nombre"
+                  {...register('nombre')}
                 />
               </div>
+              <ErrorMessage message={errors.nombre?.message} />
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
                   <svg
@@ -79,10 +98,12 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11   focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.apellido?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Apellido"
+                  {...register('apellido')}
                 />
               </div>
+              <ErrorMessage message={errors.apellido?.message} />
               {/* SELECCIONE TIPO */}
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
@@ -90,17 +111,17 @@ const UserForm = () => {
                       <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                   </svg>*/}
                 </span>
-                <select className="block w-full py-3 text-gray-500 bg-white border rounded-lg px-4 focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  <option value selected disabled>
-                    Tipo de identificacion
-                  </option>
-                  <option value="cedula_extranjeria">
-                    Cédula de extranjería
-                  </option>
-                  <option value="pasaporte">Pasaporte</option>
-                  <option value="cedula_nacional">Cédula Nacional</option>
+                <select
+                  {...register('tipo_id')}
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_id?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                >
+                  <option value="">Tipo de identificacion</option>
+                  <option value="CE">Cédula de extranjería</option>
+                  <option value="PP">Pasaporte</option>
+                  <option value="CC">Cédula Nacional</option>
                 </select>
               </div>
+              <ErrorMessage message={errors.tipo_id?.message} />
               {/* NUMERO DE IDENTIFICACION */}
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
@@ -121,36 +142,40 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.numero_id?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Número de identificación"
+                  {...register('numero_id')}
                 />
               </div>
+              <ErrorMessage message={errors.numero_id?.message} />
             </div>
             <div className="w-full">
               <div className="relative flex items-center justify-between mt-4 md:mt-0">
-                <select className="block w-full py-3 text-gray-500 bg-white border rounded-lg px-4 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  <option value selected disabled>
-                    Tipo de Usuario
-                  </option>
-                  <option value="Director">Director De Obra</option>
-                  <option value="Capataz Obra">Capataz Obra</option>
-                  <option value="Ayudante de albañil">
-                    Ayudante de Albañil
-                  </option>
+                <select
+                  {...register('tipo_usuario')}
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                >
+                  <option value="">Tipo de Usuario</option>
+                  <option value="Director de Obra">Director</option>
+                  <option value="Capataz de Obra">Capataz</option>
+                  <option value="Ayudante de albañil">Ayudante</option>
+                  <option value="Peón">{'Peón'}</option>
                 </select>
               </div>
+              <ErrorMessage message={errors.tipo_usuario?.message} />
 
               <div className="relative flex items-center mt-4">
                 <span className="absolute"></span>
-                <select className="block w-full py-3 text-gray-500 bg-white border rounded-lg px-4 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  <option value selected disabled>
-                    Genero
-                  </option>
-                  <option value="Masculino">Masculino</option>
-                  <option value="Femenino">Femenino</option>
+                <select
+                  {...register('genero')}
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.genero?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                >
+                  <option value="">Genero</option>
+                  <option value="M">Masculino</option>
+                  <option value="F">Femenino</option>
                 </select>
               </div>
-
+              <ErrorMessage message={errors.genero?.message} />
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
                   <svg
@@ -170,10 +195,12 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.celular?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Celular"
+                  {...register('celular')}
                 />
               </div>
+              <ErrorMessage message={errors.celular?.message} />
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
                   <svg
@@ -193,26 +220,43 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11  
-               focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.login?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Login"
+                  {...register('login')}
                 />
               </div>
+              <ErrorMessage message={errors.login?.message} />
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
                   <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />
                 </span>
                 <input
                   type="text"
-                  className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11  
-               focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.contraseña?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Contraseña"
+                  {...register('contraseña')}
                 />
               </div>
+              <ErrorMessage message={errors.contraseña?.message} />
             </div>
           </section>
-          <div className="mt-6">
-            <button className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+          <div className="mt-4">
+            <div className="relative flex items-center">
+              <span className="absolute">
+                <MapPinIcon className="w-6 h-6 mx-3 text-gray-300" />
+              </span>
+              <input
+                type="text"
+                className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.direccion?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                placeholder="Direccion"
+                {...register('direccion')}
+              />
+            </div>
+            <ErrorMessage message={errors.direccion?.message} />
+            <button
+              className="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+              type="submit"
+            >
               Crear usuario
             </button>
           </div>
