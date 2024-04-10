@@ -10,8 +10,11 @@ const userSchema = yup
   .object({
     nombre: yup.string().required(requiredField).max(50, maxCharacters(50)),
     apellido: yup.string().required(requiredField).max(50, maxCharacters(50)),
-    tipo_id: yup.string().required(requiredField).max(50, maxCharacters(50)),
-    numero_id: yup
+    tipo_identificacion: yup
+      .string()
+      .required(requiredField)
+      .max(50, maxCharacters(50)),
+    numero_identificacion: yup
       .string()
       .matches(/^[0-9]*$/, invalidId)
       .required(requiredField)

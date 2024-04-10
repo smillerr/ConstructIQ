@@ -4,6 +4,8 @@ import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorMessage from '../common/Forms/ErrorMessage'
+import { handleCreateUserForm } from '@/lib/utils/utilFunctions'
+import { useRouter } from 'next/navigation'
 const UserForm = () => {
   const schema = userSchema
   const {
@@ -15,13 +17,15 @@ const UserForm = () => {
 
   const errorInputClasses =
     'border-red-400 focus:border-red-400  focus:ring-red-400'
+
+  const router = useRouter()
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
         <form
           className="h-full"
           onSubmit={handleSubmit((data) => {
-            console.log('data', data)
+            handleCreateUserForm(data, router.push)
           })}
         >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
@@ -49,7 +53,6 @@ const UserForm = () => {
                   id="dropzone-file"
                   type="file"
                   className="hidden"
-                  defaultValue="picture"
                   {...register('foto_perfil')}
                 />
               </label>
@@ -112,16 +115,15 @@ const UserForm = () => {
                   </svg>*/}
                 </span>
                 <select
-                  {...register('tipo_id')}
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_id?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                  {...register('tipo_identificacion')}
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_identificacion?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                 >
                   <option value="">Tipo de identificacion</option>
-                  <option value="CE">Cédula de extranjería</option>
-                  <option value="PP">Pasaporte</option>
-                  <option value="CC">Cédula Nacional</option>
+                  <option value="TI">Tarjeta de identidad</option>
+                  <option value="Cedula">Cédula Nacional</option>
                 </select>
               </div>
-              <ErrorMessage message={errors.tipo_id?.message} />
+              <ErrorMessage message={errors.tipo_identificacion?.message} />
               {/* NUMERO DE IDENTIFICACION */}
               <div className="relative flex items-center mt-4">
                 <span className="absolute">
@@ -142,12 +144,12 @@ const UserForm = () => {
                 </span>
                 <input
                   type="text"
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.numero_id?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.numero_identificacion?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   placeholder="Número de identificación"
-                  {...register('numero_id')}
+                  {...register('numero_identificacion')}
                 />
               </div>
-              <ErrorMessage message={errors.numero_id?.message} />
+              <ErrorMessage message={errors.numero_identificacion?.message} />
             </div>
             <div className="w-full">
               <div className="relative flex items-center justify-between mt-4 md:mt-0">
@@ -156,8 +158,8 @@ const UserForm = () => {
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                 >
                   <option value="">Tipo de Usuario</option>
-                  <option value="Director de Obra">Director</option>
-                  <option value="Capataz de Obra">Capataz</option>
+                  <option value="Director de obra">Director</option>
+                  <option value="Capataz de obra">Capataz</option>
                   <option value="Ayudante de albañil">Ayudante</option>
                   <option value="Peón">{'Peón'}</option>
                 </select>
