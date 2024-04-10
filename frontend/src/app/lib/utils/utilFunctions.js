@@ -39,7 +39,7 @@ export const handleCreateUserForm = async (data, routingCallback) => {
     delete data.foto_perfil
   }
   await createUser(data)
-  routingCallback('/usuarios')
+  routingCallback('/home/usuarios')
 }
 
 export const createUser = async (userData) => {
