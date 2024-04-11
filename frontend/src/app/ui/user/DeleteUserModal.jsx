@@ -1,9 +1,9 @@
-"use client";
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+'use client'
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
+import Modal from '@mui/material/Modal'
 
 const style = {
   position: 'absolute',
@@ -12,20 +12,27 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 400,
   bgcolor: 'background.paper',
-  //border: '2px solid #000',
   borderRadius: 2,
   boxShadow: 24,
   p: 4,
-};
+}
 
 export default function DeleteUserModal() {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [open, setOpen] = React.useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
+  const handleContinuar = () => {
+    const data = { "activo": false }
+    console.log(data)
+    handleClose() 
+  }
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="outlined" color="primary">Open modal</Button>
+      <Button onClick={handleOpen} variant="outlined" color="primary">
+        Open modal
+      </Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -37,11 +44,15 @@ export default function DeleteUserModal() {
             ¿Estás seguro de esta acción?
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-            <Button onClick={handleClose} variant="outlined" color="error">Cancelar</Button>
-            <Button onClick={handleClose} variant="outlined" color="success">Continuar</Button>
+            <Button onClick={handleClose} variant="outlined" color="error">
+              Cancelar
+            </Button>
+            <Button onClick={handleContinuar} variant="outlined" color="success">
+              Continuar
+            </Button>
           </Box>
         </Box>
       </Modal>
     </div>
-  );
+  )
 }
