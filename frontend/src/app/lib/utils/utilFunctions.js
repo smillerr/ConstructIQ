@@ -38,6 +38,7 @@ export const handleCreateUserForm = async (data, routingCallback) => {
   if (data?.foto_perfil.length === 0) {
     delete data.foto_perfil
   }
+
   await createUser(data)
   routingCallback('/home/usuarios')
 }
@@ -47,4 +48,15 @@ export const createUser = async (userData) => {
   const method = 'POST'
   const body = JSON.stringify(userData)
   return await fetchData(url, method, body)
+}
+
+export const listUser = async () => {
+  const url = users.getAllUsers
+  try {
+    const res = await fetch(url, { cache: 'no-cache' })
+    const data = await res.json()
+    return data
+  } catch (error) {
+    console.log(error)
+  }
 }

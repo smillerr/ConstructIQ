@@ -1,34 +1,10 @@
+import { listUser } from '@/lib/utils/utilFunctions'
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import React from 'react'
 
-const UserList = () => {
-  const users = [
-    {
-      id: 1,
-      name: 'John Doe',
-      role: 'Admin',
-      photoUrl: 'https://via.placeholder.com/50',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      role: 'User',
-      photoUrl: 'https://via.placeholder.com/50',
-    },
-    {
-      id: 3,
-      name: 'Jane Doe',
-      role: 'Gerente',
-      photoUrl: 'https://via.placeholder.com/50',
-    },
-    {
-      id: 4,
-      name: 'John Smith',
-      role: 'Capataz',
-      photoUrl: 'https://via.placeholder.com/50',
-    },
-  ]
+export default async function UserList() {
+  const users = await listUser()
 
   return (
     <div className="text-gray-900 bg-gray-50 rounded">
@@ -52,20 +28,28 @@ const UserList = () => {
               <th className="text-left p-3 px-5">Role</th>
               <th></th>
             </tr>
-            {users.map((user) => (
+
+            {users?.map((user) => (
               <tr
                 key={user.id}
                 className="border-b hover:bg-sky-100 bg-gray-70"
               >
                 <td className="p-3 px-5 hidden md:block">
-                  <img
-                    src={user.photoUrl}
-                    alt={user.name}
-                    className="w-10 h-10 rounded-full"
-                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="w-10 h-10"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0Zm-5-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM8 9c-1.825 0-3.422.977-4.295 2.437A5.49 5.49 0 0 0 8 13.5a5.49 5.49 0 0 0 4.294-2.063A4.997 4.997 0 0 0 8 9Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
                 </td>
-                <td className="p-3 px-5">{user.name}</td>
-                <td className="p-3 px-5">{user.role}</td>
+                <td className="p-3 px-5">{user.nombre}</td>
+                <td className="p-3 px-5">{user.tipo_usuario}</td>
                 <td className="p-3 px-5 flex justify-end">
                   <Link
                     className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
@@ -87,5 +71,3 @@ const UserList = () => {
     </div>
   )
 }
-
-export default UserList
