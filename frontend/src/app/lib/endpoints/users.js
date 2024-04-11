@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:8000/api/v1' //TODO: implement via .env file
+const baseUrl = 'http://127.0.0.1:8000/api/v1' //TODO: implement via .env file
 
 export const users = {
   getAllUsers: `${baseUrl}/usuarios/`,
