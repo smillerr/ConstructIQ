@@ -1,9 +1,13 @@
+import UsersListSkeleton from '@/ui/common/Skeletons/Users/UsersListSkeleton'
 import UserList from '@/ui/user/UserList'
+import { Suspense } from 'react'
 
 const Usuarios = () => {
   return (
     <>
-      <UserList />
+      <Suspense fallback={<UsersListSkeleton />}>
+        <UserList />
+      </Suspense>
     </>
   )
 }
