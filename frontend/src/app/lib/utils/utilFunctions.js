@@ -75,10 +75,11 @@ export const createUser = async (userData) => {
 export const deleteUser = async (id) => {
   const url = users.updateUser(id)
   const method = 'PATCH'
-  const body = { activo: false }
+  const body = JSON.stringify({ activo: false })
   return await fetch(url, {
     method,
     headers: {
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
     body,

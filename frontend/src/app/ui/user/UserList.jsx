@@ -3,10 +3,12 @@ import { listUser } from '@/lib/utils/utilFunctions'
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import DeleteUserModal from './DeleteUserModal'
 
 export default function UserList() {
   const [users, setUsers] = useState([])
   const [selectedUserId, setSelectedUserId] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
   useEffect(() => {
     async function populateList() {
       const users = await listUser()
@@ -14,7 +16,6 @@ export default function UserList() {
     }
     populateList()
   }, [])
-  console.log(selectedUserId)
   return (
     <div className="text-gray-900 bg-gray-50 rounded">
       <div className="p-4 flex justify-between">
@@ -62,14 +63,17 @@ export default function UserList() {
                   <td className="p-3 px-5">{user.nombre}</td>
                   <td className="p-3 px-5">{user.tipo_usuario}</td>
                   <td className="p-3 px-5 flex justify-end">
-                    <button
-                      onClick={() => setSelectedUserId(user.id)}
-                      className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                    >
+                    <button className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                       <PencilIcon className="h-5 w-5 text-white-600" />
                       <p className="hidden ml-1 md:block"> Editar </p>
                     </button>
-                    <button className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                    <button
+                      onClick={() => {
+                        setSelectedUserId(user.id)
+                        setOpenModal(true)
+                      }}
+                      className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                    >
                       <TrashIcon className="h-5 w-5 text-white-600" />
                       <p className="hidden ml-1 md:block"> Eliminar </p>
                     </button>
@@ -78,6 +82,13 @@ export default function UserList() {
               ))}
           </tbody>
         </table>
+        {openModal && (
+          <DeleteUserModal
+            open={openModal}
+            setOpen={setOpenModal}
+            userId={selectedUserId}
+          />
+        )}
       </div>
     </div>
   )
