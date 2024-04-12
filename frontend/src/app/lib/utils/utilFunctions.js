@@ -43,20 +43,62 @@ export const handleCreateUserForm = async (data, routingCallback) => {
   routingCallback('/home/usuarios')
 }
 
+export const handleUserLogin = async (formData, routingCallback) => {
+  const url = users.authUser
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData),
+  })
+  const data = await response.json()
+  if (data.access) {
+    localStorage.setItem('token', data.access)
+    routingCallback('/home/usuarios')
+  }
+}
 export const createUser = async (userData) => {
   const url = users.createUser
   const method = 'POST'
   const body = JSON.stringify(userData)
-  return await fetchData(url, method, body)
+  return await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    body,
+  })
 }
 
+export const deleteUser = async (id) => {
+  const url = users.updateUser(id)
+  const method = 'PATCH'
+  const body = JSON.stringify({ activo: false })
+  return await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    body,
+  })
+}
 export const listUser = async () => {
   const url = users.getAllUsers
   try {
-    const res = await fetch(url, { cache: 'no-cache' })
-    const data = await res.json()
-    return data
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return res.json()
+    }
+    return []
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
