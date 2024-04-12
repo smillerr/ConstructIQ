@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorMessage from '../common/Forms/ErrorMessage'
 import { handleCreateUserForm } from '@/lib/utils/utilFunctions'
 import { useRouter } from 'next/navigation'
+import { errorInputClasses } from '@/lib/utils/commonStyles'
 const UserForm = () => {
   const schema = userSchema
   const {
@@ -14,9 +15,6 @@ const UserForm = () => {
     //watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) })
-
-  const errorInputClasses =
-    'border-red-400 focus:border-red-400  focus:ring-red-400'
 
   const router = useRouter()
   return (
