@@ -67,10 +67,13 @@ export default function UserList() {
                   <td className="p-3 px-5">{user.nombre}</td>
                   <td className="p-3 px-5">{user.tipo_usuario}</td>
                   <td className="p-3 px-5 flex justify-end">
-                    <button className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                    <Link
+                      href={`usuarios/${user.id}`}
+                      className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                    >
                       <PencilIcon className="h-5 w-5 text-white-600" />
                       <p className="hidden ml-1 md:block"> Editar </p>
-                    </button>
+                    </Link>
                     <button
                       onClick={() => {
                         setSelectedUserId(user.id)
