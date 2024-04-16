@@ -24,7 +24,6 @@ export default function DeleteUserModal({
   userId,
   handleUserDelete,
 }) {
-  const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   console.log(userId)
   const handleContinuar = async () => {
@@ -35,9 +34,6 @@ export default function DeleteUserModal({
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="outlined" color="primary">
-        Open modal
-      </Button>
       <Modal
         open={open}
         onClose={handleClose}
