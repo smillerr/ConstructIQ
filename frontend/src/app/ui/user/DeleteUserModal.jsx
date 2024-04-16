@@ -18,12 +18,18 @@ const style = {
   p: 4,
 }
 
-export default function DeleteUserModal({ open, setOpen, userId }) {
+export default function DeleteUserModal({
+  open,
+  setOpen,
+  userId,
+  handleUserDelete,
+}) {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   console.log(userId)
   const handleContinuar = async () => {
     await deleteUser(userId)
+    handleUserDelete(userId)
     handleClose()
   }
 

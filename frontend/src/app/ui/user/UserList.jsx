@@ -16,6 +16,10 @@ export default function UserList() {
     }
     populateList()
   }, [])
+  const handleUserDelete = (userId) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId))
+  }
+
   return (
     <div className="text-gray-900 bg-gray-50 rounded">
       <div className="p-4 flex justify-between">
@@ -87,6 +91,7 @@ export default function UserList() {
             open={openModal}
             setOpen={setOpenModal}
             userId={selectedUserId}
+            handleUserDelete={handleUserDelete}
           />
         )}
       </div>
