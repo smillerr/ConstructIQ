@@ -18,20 +18,22 @@ const style = {
   p: 4,
 }
 
-export default function DeleteUserModal({ open, setOpen, userId }) {
-  const handleOpen = () => setOpen(true)
+export default function DeleteUserModal({
+  open,
+  setOpen,
+  userId,
+  handleUserDelete,
+}) {
   const handleClose = () => setOpen(false)
   console.log(userId)
   const handleContinuar = async () => {
     await deleteUser(userId)
+    handleUserDelete(userId)
     handleClose()
   }
 
   return (
     <div>
-      <Button onClick={handleOpen} variant="outlined" color="primary">
-        Open modal
-      </Button>
       <Modal
         open={open}
         onClose={handleClose}

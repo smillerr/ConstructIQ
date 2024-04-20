@@ -35,7 +35,7 @@ export const fetchData = async (
 }
 
 export const handleCreateUserForm = async (data, routingCallback) => {
-  if (data?.foto_perfil.length === 0) {
+  if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
 
@@ -43,6 +43,14 @@ export const handleCreateUserForm = async (data, routingCallback) => {
   routingCallback('/home/usuarios')
 }
 
+export const handleEditUserForm = async (data, routingCallback) => {
+  if (data?.foto_perfil?.length === 0) {
+    delete data.foto_perfil
+  }
+
+  await editUser(data)
+  routingCallback('/home/usuarios')
+}
 export const handleUserLogin = async (formData, routingCallback) => {
   const url = users.authUser
   const response = await fetch(url, {
@@ -101,4 +109,36 @@ export const listUser = async () => {
   } catch (error) {
     console.error(error)
   }
+}
+
+export const getUser = async (id) => {
+  const url = users.getUserById(id)
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const editUser = async (userData) => {
+  const url = users.updateUser(userData.id)
+  const method = 'PUT'
+  const body = JSON.stringify(userData)
+  return await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+    body,
+  })
 }
