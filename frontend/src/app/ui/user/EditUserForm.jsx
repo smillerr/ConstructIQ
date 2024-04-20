@@ -1,13 +1,14 @@
 'use client'
 import userSchema from '@/lib/Validators/create-user'
-import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import ErrorMessage from '../common/Forms/ErrorMessage'
-import { getUser, handleEditUserForm } from '@/lib/utils/utilFunctions'
-import { useRouter } from 'next/navigation'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
-import { useEffect } from 'react'
+import { getUser, handleEditUserForm } from '@/lib/utils/utilFunctions'
+import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import ErrorMessage from '../common/Forms/ErrorMessage'
+import { Alert } from '@mui/material'
 const EditUserForm = ({ userId }) => {
   const schema = userSchema
   const {
@@ -22,7 +23,7 @@ const EditUserForm = ({ userId }) => {
     })
   }
   const router = useRouter()
-
+  const [fetchError, setFetchError] = useState('')
   useEffect(() => {
     async function getUserData() {
       const userData = await getUser(userId)
@@ -36,7 +37,7 @@ const EditUserForm = ({ userId }) => {
         <form
           className="h-full"
           onSubmit={handleSubmit((data) => {
-            handleEditUserForm(data, router.push)
+            handleEditUserForm(data, router.push, setFetchError)
           })}
         >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
@@ -266,6 +267,11 @@ const EditUserForm = ({ userId }) => {
               />
             </div>
             <ErrorMessage message={errors.direccion?.message} />
+            {fetchError && (
+              <Alert variant="filled" severity="error" className="mt-4">
+                {fetchError}
+              </Alert>
+            )}
             <button
               className="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               type="submit"

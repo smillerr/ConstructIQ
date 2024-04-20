@@ -7,6 +7,8 @@ import ErrorMessage from '../common/Forms/ErrorMessage'
 import { handleCreateUserForm } from '@/lib/utils/utilFunctions'
 import { useRouter } from 'next/navigation'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
+import { useState } from 'react'
+import { Alert } from '@mui/material'
 const UserForm = () => {
   const schema = userSchema
   const {
@@ -15,7 +17,7 @@ const UserForm = () => {
     //watch,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) })
-
+  const [fetchError, setFetchError] = useState('')
   const router = useRouter()
   return (
     <section className="bg-white">
@@ -23,7 +25,7 @@ const UserForm = () => {
         <form
           className="h-full"
           onSubmit={handleSubmit((data) => {
-            handleCreateUserForm(data, router.push)
+            handleCreateUserForm(data, router.push, setFetchError)
           })}
         >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
@@ -253,6 +255,11 @@ const UserForm = () => {
               />
             </div>
             <ErrorMessage message={errors.direccion?.message} />
+            {fetchError && (
+              <Alert variant="filled" severity="error" className="mt-4">
+                {fetchError}
+              </Alert>
+            )}
             <button
               className="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               type="submit"
