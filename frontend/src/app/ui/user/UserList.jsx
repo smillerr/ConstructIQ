@@ -34,7 +34,7 @@ export default function UserList() {
       </div>
 
       <div className="px-3 py-4 flex justify-center">
-        <table className="w-full text-md bg-white shadow-md rounded mb-4">
+        <table className="w-full text-md bg-white shadow-md rounded mb-4 table-auto">
           <tbody>
             <tr className="border-b">
               <th className="text-left p-3 px-5 hidden md:block">Photo</th>
@@ -55,7 +55,7 @@ export default function UserList() {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 16 16"
                       fill="currentColor"
-                      className="w-10 h-10"
+                      className="w-10"
                     >
                       <path
                         fillRule="evenodd"
@@ -66,24 +66,26 @@ export default function UserList() {
                   </td>
                   <td className="p-3 px-5">{user.nombre}</td>
                   <td className="p-3 px-5">{user.tipo_usuario}</td>
-                  <td className="p-3 px-5 flex justify-end">
-                    <Link
-                      href={`usuarios/${user.id}`}
-                      className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                    >
-                      <PencilIcon className="h-5 w-5 text-white-600" />
-                      <p className="hidden ml-1 md:block"> Editar </p>
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setSelectedUserId(user.id)
-                        setOpenModal(true)
-                      }}
-                      className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                    >
-                      <TrashIcon className="h-5 w-5 text-white-600" />
-                      <p className="hidden ml-1 md:block"> Eliminar </p>
-                    </button>
+                  <td className="p-3 px-5 ">
+                    <div className="flex items-center justify-end">
+                      <Link
+                        href={`usuarios/${user.id}`}
+                        className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                      >
+                        <PencilIcon className="h-5 w-5 text-white-600" />
+                        <p className="hidden ml-1 md:block"> Editar </p>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setSelectedUserId(user.id)
+                          setOpenModal(true)
+                        }}
+                        className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                      >
+                        <TrashIcon className="h-5 w-5 text-white-600" />
+                        <p className="hidden ml-1 md:block"> Eliminar </p>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
