@@ -7,27 +7,33 @@ import ErrorMessage from '../common/Forms/ErrorMessage'
 import { handleCreateUserForm } from '@/lib/utils/utilFunctions'
 import { useRouter } from 'next/navigation'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Alert } from '@mui/material'
 const UserForm = () => {
   const schema = userSchema
   const {
     register,
     handleSubmit,
-    watch,
+    setValue,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) })
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
   const [fetchError, setFetchError] = useState('')
+  const [tipoUsuario, setTipoUsuario] = useState('')
+  const tipoUsuarioRef = useRef()
   const router = useRouter()
-  const userType = watch('tipo_usuario', '')
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
         <form
           className="h-full"
-          onSubmit={handleSubmit((data) => {
-            handleCreateUserForm(data, router.push, setFetchError)
-          })}
+          onSubmit={handleSubmit(
+            (data) => {
+              handleCreateUserForm(data, router.push, setFetchError)
+            },
+            (err) => console.log(err),
+          )}
         >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
             <div className="w-full">
@@ -156,6 +162,21 @@ const UserForm = () => {
               <div className="relative flex items-center justify-between mt-4 md:mt-0">
                 <select
                   {...register('tipo_usuario')}
+                  ref={tipoUsuarioRef}
+                  onChange={() => {
+                    setTipoUsuario(tipoUsuarioRef.current.value)
+                    setValue('tipo_usuario', tipoUsuarioRef.current.value)
+                    if (
+                      tipoUsuarioRef.current.value === 'Ayudante de albañil' ||
+                      tipoUsuarioRef.current.value === 'Peón'
+                    ) {
+                      setValue('login', 'N/A')
+                      setValue('contraseña', 'N/A')
+                      return
+                    }
+                    setValue('login', '')
+                    setValue('contraseña', '')
+                  }}
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                 >
                   <option value="">Tipo de Usuario</option>
@@ -204,9 +225,9 @@ const UserForm = () => {
                 />
               </div>
               <ErrorMessage message={errors.celular?.message} />
-              {(userType === 'Director de obra' ||
-                userType === 'Capataz de obra' ||
-                userType === '') && (
+              {(tipoUsuario === 'Director de obra' ||
+                tipoUsuario === 'Capataz de obra' ||
+                tipoUsuario === '') && (
                 <>
                   <div className="relative flex items-center mt-4">
                     <span className="absolute">
