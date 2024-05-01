@@ -34,50 +34,84 @@ export const fetchData = async (
   }
 }
 
-export const handleCreateUserForm = async (data, routingCallback) => {
+export const handleCreateUserForm = async (
+  data,
+  routingCallback,
+  errorCallback,
+) => {
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
 
-  await createUser(data)
-  routingCallback('/home/usuarios')
+  await createUser(data, routingCallback, errorCallback)
 }
 
-export const handleEditUserForm = async (data, routingCallback) => {
+export const handleEditUserForm = async (
+  data,
+  routingCallback,
+  errorCallback,
+) => {
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
 
-  await editUser(data)
-  routingCallback('/home/usuarios')
+  await editUser(data, routingCallback, errorCallback)
 }
-export const handleUserLogin = async (formData, routingCallback) => {
+export const handleUserLogin = async (
+  formData,
+  routingCallback,
+  errorCallback,
+) => {
   const url = users.authUser
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formData),
-  })
-  const data = await response.json()
-  if (data.access) {
-    localStorage.setItem('token', data.access)
-    routingCallback('/home/usuarios')
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+    if (response.status === 401) {
+      errorCallback('Usuario o contraseña incorrectos')
+    }
+    const data = await response.json()
+    if (data.access) {
+      localStorage.setItem('token', data.access)
+      errorCallback('')
+      routingCallback('/home/usuarios')
+    }
+  } catch (_) {
+    const errorMessage = 'Hubo un error al iniciar sesion, intente mas tarde'
+    errorCallback(errorMessage)
   }
 }
-export const createUser = async (userData) => {
+export const createUser = async (userData, routingCallback, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
   const body = JSON.stringify(userData)
-  return await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    body,
-  })
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body,
+    })
+    if (res.status === 400) {
+      errorCallback(
+        'Ya existe un usuario con este login, por favor intente con otro',
+      )
+    }
+    if (res.ok) {
+      errorCallback('')
+      routingCallback('/home/usuarios')
+      return res.json()
+    }
+  } catch (_) {
+    const errorMessage = 'Hubo un error al crear el usuario, intente mas tarde'
+    errorCallback(errorMessage)
+  }
 }
 
 export const deleteUser = async (id) => {
@@ -107,7 +141,7 @@ export const listUser = async () => {
     }
     return []
   } catch (error) {
-    console.error(error)
+    console.error('error', error)
   }
 }
 
@@ -129,16 +163,26 @@ export const getUser = async (id) => {
   }
 }
 
-export const editUser = async (userData) => {
+export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PUT'
   const body = JSON.stringify(userData)
-  return await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-    body,
-  })
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      errorCallback('')
+      routingCallback('/home/usuarios')
+      return res.json()
+    }
+  } catch (_) {
+    const errorMessage = 'Hubo un error al editar el usuario, intente mas tarde'
+    errorCallback(errorMessage)
+  }
 }

@@ -8,6 +8,8 @@ import ErrorMessage from '../common/Forms/ErrorMessage'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
 import { useRouter } from 'next/navigation'
 import { handleUserLogin } from '@/lib/utils/utilFunctions'
+import { Alert } from '@mui/material'
+import { useState } from 'react'
 const UserLoginForm = () => {
   const {
     register,
@@ -15,9 +17,12 @@ const UserLoginForm = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(credentialsSchema) })
   const router = useRouter()
+  const [error, setError] = useState('')
   return (
     <form
-      onSubmit={handleSubmit((data) => handleUserLogin(data, router.push))}
+      onSubmit={handleSubmit((data) =>
+        handleUserLogin(data, router.push, setError),
+      )}
       className="w-full max-w-md"
     >
       <ConstructIQLogo isLogin />
@@ -61,6 +66,11 @@ const UserLoginForm = () => {
         />
       </div>
       <ErrorMessage message={errors.password?.message} />
+      {error && (
+        <Alert variant="filled" severity="error" className="mt-4">
+          {error}
+        </Alert>
+      )}
       <div className="mt-6">
         <button className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
           Sign in

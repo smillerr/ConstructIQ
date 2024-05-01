@@ -7,24 +7,33 @@ import ErrorMessage from '../common/Forms/ErrorMessage'
 import { handleCreateUserForm } from '@/lib/utils/utilFunctions'
 import { useRouter } from 'next/navigation'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
+import { useRef, useState } from 'react'
+import { Alert } from '@mui/material'
 const UserForm = () => {
   const schema = userSchema
   const {
     register,
     handleSubmit,
-    //watch,
+    setValue,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) })
-
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+  const [fetchError, setFetchError] = useState('')
+  const [tipoUsuario, setTipoUsuario] = useState('')
+  const tipoUsuarioRef = useRef()
   const router = useRouter()
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
         <form
           className="h-full"
-          onSubmit={handleSubmit((data) => {
-            handleCreateUserForm(data, router.push)
-          })}
+          onSubmit={handleSubmit(
+            (data) => {
+              handleCreateUserForm(data, router.push, setFetchError)
+            },
+            (err) => console.log(err),
+          )}
         >
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
             <div className="w-full">
@@ -153,6 +162,21 @@ const UserForm = () => {
               <div className="relative flex items-center justify-between mt-4 md:mt-0">
                 <select
                   {...register('tipo_usuario')}
+                  ref={tipoUsuarioRef}
+                  onChange={() => {
+                    setTipoUsuario(tipoUsuarioRef.current.value)
+                    setValue('tipo_usuario', tipoUsuarioRef.current.value)
+                    if (
+                      tipoUsuarioRef.current.value === 'Ayudante de albañil' ||
+                      tipoUsuarioRef.current.value === 'Peón'
+                    ) {
+                      setValue('login', 'N/A')
+                      setValue('contraseña', 'N/A')
+                      return
+                    }
+                    setValue('login', '')
+                    setValue('contraseña', '')
+                  }}
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                 >
                   <option value="">Tipo de Usuario</option>
@@ -201,43 +225,49 @@ const UserForm = () => {
                 />
               </div>
               <ErrorMessage message={errors.celular?.message} />
-              <div className="relative flex items-center mt-4">
-                <span className="absolute">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-6 h-6 mx-3 text-gray-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              {(tipoUsuario === 'Director de obra' ||
+                tipoUsuario === 'Capataz de obra' ||
+                tipoUsuario === '') && (
+                <>
+                  <div className="relative flex items-center mt-4">
+                    <span className="absolute">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 mx-3 text-gray-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </span>
+                    <input
+                      type="text"
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.login?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                      placeholder="Login"
+                      {...register('login')}
                     />
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.login?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                  placeholder="Login"
-                  {...register('login')}
-                />
-              </div>
-              <ErrorMessage message={errors.login?.message} />
-              <div className="relative flex items-center mt-4">
-                <span className="absolute">
-                  <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />
-                </span>
-                <input
-                  type="text"
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.contraseña?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                  placeholder="Contraseña"
-                  {...register('contraseña')}
-                />
-              </div>
-              <ErrorMessage message={errors.contraseña?.message} />
+                  </div>
+                  <ErrorMessage message={errors.login?.message} />
+                  <div className="relative flex items-center mt-4">
+                    <span className="absolute">
+                      <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />
+                    </span>
+                    <input
+                      type="text"
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.contraseña?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                      placeholder="Contraseña"
+                      {...register('contraseña')}
+                    />
+                  </div>
+                  <ErrorMessage message={errors.contraseña?.message} />
+                </>
+              )}
             </div>
           </section>
           <div className="mt-4">
@@ -253,6 +283,11 @@ const UserForm = () => {
               />
             </div>
             <ErrorMessage message={errors.direccion?.message} />
+            {fetchError && (
+              <Alert variant="filled" severity="error" className="mt-4">
+                {fetchError}
+              </Alert>
+            )}
             <button
               className="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               type="submit"
