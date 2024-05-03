@@ -4,6 +4,7 @@ from user_management import views
 
 router=routers.DefaultRouter()
 router.register(r'usuarios', views.UsuarioViewSet)
+router.register(r'obras', views.ObraViewSet)
 
 urlpatterns = [
     path('', include(router.urls))
