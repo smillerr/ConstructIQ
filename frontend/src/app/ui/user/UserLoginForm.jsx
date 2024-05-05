@@ -10,23 +10,33 @@ import { useRouter } from 'next/navigation'
 import { handleUserLogin } from '@/lib/utils/utilFunctions'
 import { Alert } from '@mui/material'
 import { useState } from 'react'
+import ReCAPTCHA from 'react-google-recaptcha'
+
 const UserLoginForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(credentialsSchema) })
+  } = useForm({
+    resolver: yupResolver(credentialsSchema),
+  })
   const router = useRouter()
   const [error, setError] = useState('')
+  const [captchaValue, setCaptchaValue] = useState(null)
+
+  const onSubmit = (data) => {
+    if (!captchaValue) {
+      setError('Por favor, complete el captcha antes de enviar el formulario.')
+      return
+    }
+
+    handleUserLogin(data, router.push, setError)
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit((data) =>
-        handleUserLogin(data, router.push, setError),
-      )}
-      className="w-full max-w-md"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
       <ConstructIQLogo isLogin />
-      <h1 className="mt-3 text-2xl font-semibold text-gray-800 capitalize sm:text-3xl ">
+      <h1 className="mt-3 text-2xl font-semibold text-gray-800 capitalize sm:text-3xl">
         Sign in
       </h1>
       <div className="relative flex items-center mt-8">
@@ -35,7 +45,11 @@ const UserLoginForm = () => {
         </span>
         <input
           type="text"
-          className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11  ${errors.username?.message ? errorInputClasses : 'focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40'}`}
+          className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${
+            errors.username?.message
+              ? errorInputClasses
+              : 'focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40'
+          }`}
           placeholder="Username"
           {...register('username')}
         />
@@ -60,12 +74,24 @@ const UserLoginForm = () => {
         </span>
         <input
           type="password"
-          className={`block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg  ${errors.password?.message ? errorInputClasses : 'focus:border-blue-400  focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40'} `}
+          className={`block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg ${
+            errors.password?.message
+              ? errorInputClasses
+              : 'focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40'
+          } `}
           placeholder="Password"
           {...register('password')}
         />
       </div>
       <ErrorMessage message={errors.password?.message} />
+      <div className="flex justify-center">
+        <ReCAPTCHA
+          className="mt-4"
+          sitekey="6LcdedEpAAAAAMmfUebA7z-fuutpfxPjbEgDheoT"
+          onChange={(value) => setCaptchaValue(value)}
+        />
+      </div>
+
       {error && (
         <Alert variant="filled" severity="error" className="mt-4">
           {error}
