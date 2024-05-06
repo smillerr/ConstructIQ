@@ -1,4 +1,5 @@
 import { users } from '../endpoints/users'
+import { getAccessToken, storeSessionAction } from './actions'
 
 export const fetchData = async (
   url,
@@ -76,7 +77,7 @@ export const handleUserLogin = async (
     }
     const data = await response.json()
     if (data.access) {
-      localStorage.setItem('token', data.access)
+      storeSessionAction(data.access, data.refresh)
       errorCallback('')
       routingCallback('/home/usuarios')
     }
@@ -89,12 +90,13 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
   const body = JSON.stringify(userData)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       body,
     })
@@ -118,21 +120,23 @@ export const deleteUser = async (id) => {
   const url = users.updateUser(id)
   const method = 'PATCH'
   const body = JSON.stringify({ activo: false })
+  const access_token = await getAccessToken()
   return await fetch(url, {
     method,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${access_token}`,
     },
     body,
   })
 }
 export const listUser = async () => {
   const url = users.getAllUsers
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       cache: 'no-cache',
     })
@@ -147,10 +151,11 @@ export const listUser = async () => {
 
 export const getUser = async (id) => {
   const url = users.getUserById(id)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       cache: 'no-cache',
     })
@@ -167,12 +172,13 @@ export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PUT'
   const body = JSON.stringify(userData)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       body,
     })

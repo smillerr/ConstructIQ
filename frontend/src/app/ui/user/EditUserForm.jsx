@@ -30,6 +30,7 @@ const EditUserForm = ({ userId }) => {
   useEffect(() => {
     async function getUserData() {
       const userData = await getUser(userId)
+      console.log(userData)
       populateForm(userData)
       setTipoUsuario(userData.tipo_usuario)
     }
@@ -41,7 +42,6 @@ const EditUserForm = ({ userId }) => {
         <form
           className="h-full"
           onSubmit={handleSubmit((data) => {
-            console.log(data)
             handleEditUserForm(data, router.push, setFetchError)
           })}
         >
