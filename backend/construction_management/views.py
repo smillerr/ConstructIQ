@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .serializer import UsuarioSerializer
-from .models import Usuario
+from .serializer import ObraSerializer
+from .models import Obra
 from rest_framework.permissions import IsAuthenticated  
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -13,8 +13,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 class LoginView(TokenObtainPairView):
     pass
 
-class UsuarioViewSet(viewsets.ModelViewSet):
+class ObraViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = Obra.objects.all()
+    serializer_class = ObraSerializer
+# Create your views here.

@@ -25,7 +25,7 @@ class Usuario(models.Model):
     tipo_usuario = models.CharField(max_length=20, choices=TIPOS_USUARIO)
     activo = models.BooleanField(default=True)
     
-
+"""
 
 class Obra(models.Model):
     nombre = models.CharField(max_length=50)
@@ -84,4 +84,5 @@ class Tarea(models.Model):
 
     def __str__(self):
         return self.nombre
+"""
 
