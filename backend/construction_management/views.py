@@ -4,7 +4,6 @@ from .models import Obra, ObraPersonal
 from rest_framework.permissions import IsAuthenticated  
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
-from .forms import ObraPersonalForm
 
 
 # Create your views here.
