@@ -40,6 +40,13 @@ class Obra(models.Model):
     def __str__(self):
         return self.nombre
 
+    # Método para obtener solo obras activas
+    @classmethod
+    def obras_activas(cls):
+        return cls.objects.filter(activo=True)
+
+
+
 class ObraPersonal(models.Model):
     id_obra = models.ForeignKey(Obra, on_delete=models.CASCADE)
     TIPOS_USUARIO_OBRA = (
