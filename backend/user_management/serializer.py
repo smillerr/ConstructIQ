@@ -3,5 +3,8 @@ from .models import Usuario
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Usuario
+        model = Usuario
         fields = '__all__'
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }

@@ -1,11 +1,20 @@
 from django.db import models
+from django.contrib.auth import models as auth_models
 
-class Usuario(models.Model):
+class Usuario(auth_models.AbstractUser):
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = [
+        'nombre',
+        'apellido',
+        'tipo_identificacion',
+        'numero_identificacion',
+        'tipo_usuario',
+        'password', 
+    ]
+#    password = models.CharField(max_length=100, default='')
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
-    foto_perfil = models.BinaryField(null=True)
-    login = models.CharField(max_length=100, unique=True)
-    contraseña = models.CharField(max_length=100)
+    foto_perfil = models.BinaryField(null=True) 
     genero = models.CharField(max_length=10)
     direccion = models.CharField(max_length=100)
     celular = models.CharField(max_length=20)
@@ -17,13 +26,13 @@ class Usuario(models.Model):
     tipo_identificacion = models.CharField(max_length=20, choices=TIPOS_IDENTIFICACION)
     TIPOS_USUARIO = (
         ('Gerente', 'Gerente'),
-        ('Director de obra', 'Director de obra'),
+        ('  ', 'Director de obra'),
         ('Capataz de obra', 'Capataz de obra'),
         ('Peón', 'Peón'),
         ('Ayudante de albañil', 'Ayudante de albañil'),
     )
     tipo_usuario = models.CharField(max_length=20, choices=TIPOS_USUARIO)
-    activo = models.BooleanField(default=True)
+    #is_active
     
 
 

@@ -6,10 +6,10 @@ COPY requirements.txt ./
 RUN pip install -r requirements.txt
 ENV DJANGO_DB_NAME="constructiq"
 ENV DJANGO_DB_USER="constructiq_owner"
+
 ENV DJANGO_DB_PORT="5432"
 ENV DEBUG="True"
 ENV ALLOWED_HOSTS="localhost,127.0.0.1,0.0.0.0"
-ENV DJANGO_SUPERUSER_PASSWORD="test"
 COPY . .
 
 EXPOSE 8000
