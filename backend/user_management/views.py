@@ -1,19 +1,33 @@
 from rest_framework import viewsets, status
-from .serializer import UsuarioSerializer
+from .serializer import UsuarioSerializer, UserInformationSerializer
 from .models import Usuario
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated  
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import UserTypePermission
 from django.contrib.auth.hashers import make_password
+import logging
+logger = logging.getLogger("mylogger")
 
-# Create your views here.
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        user_data = UserInformationSerializer(user).data
+        token['data'] = user_data
+        return token
 
+    def validate(self, attrs):
+        data = super().validate(attrs)
 
+        user = self.user
+        data["user"] = UserInformationSerializer(user).data
+        return data
 
 class LoginView(TokenObtainPairView):
-    pass
+    serializer_class = CustomTokenObtainPairSerializer
 
 class UsuarioViewSet(viewsets.ModelViewSet):
 

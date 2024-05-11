@@ -31,7 +31,28 @@ DEBUG = True
 
 ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS", default=[]))
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+        },
+    },
+    'loggers': {
+        'constructiq_logger': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+    },
+}
 # Application definition
 
 INSTALLED_APPS = [
