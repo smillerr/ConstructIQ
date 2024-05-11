@@ -8,7 +8,6 @@ import { redirect } from 'next/navigation'
 export default function SideNav() {
   const session = getSession()
   if (!session) redirect('/')
-  console.log(session)
   return (
     <div className="flex md:h-full flex-col px-3 py-4 md:px-2">
       <Link

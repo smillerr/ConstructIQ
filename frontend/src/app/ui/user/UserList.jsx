@@ -4,9 +4,10 @@ import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import DeleteUserModal from './DeleteUserModal'
+import UsersListSkeleton from '../common/Skeletons/Users/UsersListSkeleton'
 
 export default function UserList() {
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState(null)
   const [selectedUserId, setSelectedUserId] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   useEffect(() => {
@@ -42,7 +43,7 @@ export default function UserList() {
               <th className="text-left p-3 px-5">Role</th>
               <th></th>
             </tr>
-
+            {!users && <UsersListSkeleton />}
             {users
               ?.filter((user) => user?.activo)
               .map((user) => (
