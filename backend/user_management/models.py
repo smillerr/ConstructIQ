@@ -26,7 +26,7 @@ class Usuario(auth_models.AbstractUser):
     tipo_identificacion = models.CharField(max_length=20, choices=TIPOS_IDENTIFICACION)
     TIPOS_USUARIO = (
         ('Gerente', 'Gerente'),
-        ('  ', 'Director de obra'),
+        ('Director de obra', 'Director de obra'),
         ('Capataz de obra', 'Capataz de obra'),
         ('Peón', 'Peón'),
         ('Ayudante de albañil', 'Ayudante de albañil'),
