@@ -112,11 +112,11 @@ WSGI_APPLICATION = 'main_module.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DJANGO_DB_NAME'),
-        'USER': os.environ.get('DJANGO_DB_USER'),
-        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
-        'HOST': os.environ.get('DJANGO_DB_HOST'),  # Replace with your PostgreSQL server's address if necessary
-        'PORT': os.environ.get('DJANGO_DB_PORT'),         # Leave empty to use the default PostgreSQL port (usually 5432)
+        'NAME': env('DJANGO_DB_NAME', default='postgres'),
+        'USER': env('DJANGO_DB_USER', default='postgres.oynvwkpmvpysyoiznqlu'),
+        'PASSWORD': env('DJANGO_DB_PASSWORD', default='Desarrollo2024'),
+        'HOST': env('DJANGO_DB_HOST', default='aws-0-us-west-1.pooler.supabase.com'),
+        'PORT': env('DJANGO_DB_PORT', default='5432'),
     }
 }
 
