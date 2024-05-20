@@ -18,6 +18,7 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+AUTH_USER_MODEL = "user_management.Usuario"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -30,7 +31,28 @@ DEBUG = True
 
 ALLOWED_HOSTS = tuple(env.list("ALLOWED_HOSTS", default=[]))
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+        },
+    },
+    'loggers': {
+        'constructiq_logger': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+    },
+}
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,7 +66,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'coreapi',
     'corsheaders',
-    'user_management'
+    'user_management',
+    'construction_management'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -89,11 +112,11 @@ WSGI_APPLICATION = 'main_module.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DJANGO_DB_NAME'),
-        'USER': os.environ.get('DJANGO_DB_USER'),
-        'PASSWORD': os.environ.get('DJANGO_DB_PASSWORD'),
-        'HOST': os.environ.get('DJANGO_DB_HOST'),  # Replace with your PostgreSQL server's address if necessary
-        'PORT': os.environ.get('DJANGO_DB_PORT'),         # Leave empty to use the default PostgreSQL port (usually 5432)
+        'NAME': env('DJANGO_DB_NAME', default='postgres'),
+        'USER': env('DJANGO_DB_USER', default='postgres.oynvwkpmvpysyoiznqlu'),
+        'PASSWORD': env('DJANGO_DB_PASSWORD', default='Desarrollo2024'),
+        'HOST': env('DJANGO_DB_HOST', default='aws-0-us-west-1.pooler.supabase.com'),
+        'PORT': env('DJANGO_DB_PORT', default='5432'),
     }
 }
 
@@ -141,8 +164,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1440),
+#    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1440),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True
 }
 
 REST_FRAMEWORK = {
