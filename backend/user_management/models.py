@@ -1,16 +1,25 @@
 from django.db import models
 from django.contrib.auth import models as auth_models
+from .managers import CustomUserManager
+
 
 class Usuario(auth_models.AbstractUser):
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'login'
     REQUIRED_FIELDS = [
         'nombre',
         'apellido',
         'tipo_identificacion',
         'numero_identificacion',
-        'tipo_usuario',
-        'password', 
+        'tipo_usuario'
     ]
+
+    objects = CustomUserManager()
+
+#    password = models.CharField(max_length=100, default='')
+    username = None
+    first_name = None
+    last_name = None
+    login = models.CharField(max_length=50, unique=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     foto_perfil = models.BinaryField(null=True) 
