@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from .serializer import ObraSerializer, ObraPersonalSerializer
 from .models import Obra, ObraPersonal
 from rest_framework.permissions import IsAuthenticated  
-from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
 
 
@@ -10,9 +9,6 @@ from django.shortcuts import render
 
 #Añadir decoradores para proteger acceso
 
-
-class LoginView(TokenObtainPairView):
-    pass
 
 class ObraViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

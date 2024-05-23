@@ -2,7 +2,23 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from django.contrib.auth import get_user_model
 
+def create_superuser():
+    User = get_user_model()
+    try:
+        user = User.objects.create_superuser(
+            login='your_login',
+            nombre='your_name',
+            apellido='your_last_name',
+            tipo_identificacion='your_id_type',
+            numero_identificacion='your_id_number',
+            tipo_usuario='your_user_type',
+            password='your_password'
+        )
+        print('Superuser created successfully.')
+    except Exception as e:
+        print(f'Error creating superuser: {e}')
 
 def main():
     """Run administrative tasks."""
