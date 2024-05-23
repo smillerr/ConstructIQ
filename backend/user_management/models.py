@@ -19,7 +19,7 @@ class Usuario(auth_models.AbstractUser):
     username = None
     first_name = None
     last_name = None
-    login = models.CharField(max_length=50, unique=True)
+    login = models.CharField(max_length=50, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     foto_perfil = models.BinaryField(null=True) 
