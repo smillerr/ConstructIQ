@@ -42,5 +42,10 @@ class Usuario(auth_models.AbstractUser):
     tipo_usuario = models.CharField(max_length=20, choices=TIPOS_USUARIO)
     #is_active
     
+    def delete(self, *args, **kwargs):
+        # Elicitación Grupo 1, pregunta 7
+        self.is_active = False
+        self.save()
+
     def __str__(self):
         return self.nombre
