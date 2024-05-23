@@ -19,6 +19,7 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 AUTH_USER_MODEL = "user_management.Usuario"
+ACCOUNT_USERNAME_REQUIRED = False
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -112,11 +113,11 @@ WSGI_APPLICATION = 'main_module.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DJANGO_DB_NAME', default='postgres'),
-        'USER': env('DJANGO_DB_USER', default='postgres.oynvwkpmvpysyoiznqlu'),
-        'PASSWORD': env('DJANGO_DB_PASSWORD', default='Desarrollo2024'),
-        'HOST': env('DJANGO_DB_HOST', default='aws-0-us-west-1.pooler.supabase.com'),
-        'PORT': env('DJANGO_DB_PORT', default='5432'),
+        'NAME': "postgres",
+        'USER': "postgres.kppbgdmefhnkehajqjdc",
+        'PASSWORD': "Desarrollo2024",
+        'HOST': "aws-0-us-east-1.pooler.supabase.com",
+        'PORT': "5432",
     }
 }
 
