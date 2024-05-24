@@ -45,7 +45,7 @@ export default function UserList() {
             </tr>
             {!users && <UsersListSkeleton />}
             {users
-              ?.filter((user) => user?.activo)
+              ?.filter((user) => user?.is_active)
               .map((user) => (
                 <tr
                   key={user.id}

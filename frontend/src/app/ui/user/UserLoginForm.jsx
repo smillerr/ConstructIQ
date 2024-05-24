@@ -51,7 +51,7 @@ const UserLoginForm = () => {
               : 'focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40'
           }`}
           placeholder="Username"
-          {...register('username')}
+          {...register('login')}
         />
       </div>
       <ErrorMessage message={errors.username?.message} />

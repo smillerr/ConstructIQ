@@ -1,6 +1,11 @@
 import EditUserForm from '@/ui/user/EditUserForm'
-
-const EditUser = (props) => {
+import { redirect } from 'next/navigation'
+import { getSession } from '@/lib/utils/auth'
+export default async function EditUser(props) {
+  const session = await getSession()
+  if (session?.user?.tipo_usuario !== 'Gerente') {
+    redirect('/home/usuarios')
+  }
   return (
     <>
       <div className="p-4 flex justify-between">
@@ -10,5 +15,3 @@ const EditUser = (props) => {
     </>
   )
 }
-
-export default EditUser

@@ -46,13 +46,11 @@ export const handleCreateUserForm = async (
   }
   // * Right now this approach is not supported because the backend is not ready to handle this,
   // * but it will be implemented in the future
-  /* if (data?.login === 'N/A') {
+  if (data?.login === 'N/A') {
     delete data.login
     delete data.password
-  } */
-  if (data?.login === 'N/A') {
-    data.login = generateRandomString()
   }
+
   await createUser(data, routingCallback, errorCallback)
 }
 // * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
@@ -98,7 +96,7 @@ export const handleUserLogin = async (
     }
     const data = await response.json()
     if (data.access) {
-      storeSessionAction(data.access, data.refresh)
+      storeSessionAction(data.access, data.refresh, data.user)
       errorCallback('')
       routingCallback('/home/usuarios')
     }
@@ -116,7 +114,7 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
     const res = await fetch(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${access_token}`,
       },
       body,
@@ -139,8 +137,7 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
 
 export const deleteUser = async (id) => {
   const url = users.updateUser(id)
-  const method = 'PATCH'
-  const body = JSON.stringify({ activo: false })
+  const method = 'DELETE'
   const access_token = await getAccessToken()
   return await fetch(url, {
     method,
@@ -148,7 +145,6 @@ export const deleteUser = async (id) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${access_token}`,
     },
-    body,
   })
 }
 export const listUser = async () => {
@@ -226,6 +222,7 @@ export const refreshToken = async (refresher) => {
     body,
   })
   if (res.ok) {
-    return await res.json()
+    return { res: await res.json(), valid: true }
   }
+  return { res: {}, valid: false }
 }
