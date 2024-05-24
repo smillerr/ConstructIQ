@@ -1,5 +1,5 @@
 'use client'
-import userSchema from '@/lib/Validators/edit-user'
+import userSchema from '@/lib/Validators/create-user'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
 import { getUser, handleEditUserForm } from '@/lib/utils/utilFunctions'
 import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
@@ -25,13 +25,21 @@ const EditUserForm = ({ userId }) => {
   const router = useRouter()
   const [fetchError, setFetchError] = useState('')
   const [tipoUsuario, setTipoUsuario] = useState('')
+  const [isLoginEditable, setIsLoginEditable] = useState(null)
   const tipoUsuarioRef = useRef()
 
   useEffect(() => {
     async function getUserData() {
       const userData = await getUser(userId)
+      console.log(userData)
       populateForm(userData)
       setTipoUsuario(userData.tipo_usuario)
+      if (
+        userData.tipo_usuario !== 'Ayudante de albañil' ||
+        userData.tipo_usuario !== 'Peón'
+      ) {
+        setIsLoginEditable(false)
+      }
     }
     getUserData()
   }, [])
@@ -41,7 +49,6 @@ const EditUserForm = ({ userId }) => {
         <form
           className="h-full"
           onSubmit={handleSubmit((data) => {
-            console.log(data)
             handleEditUserForm(data, router.push, setFetchError)
           })}
         >
@@ -180,10 +187,13 @@ const EditUserForm = ({ userId }) => {
                       tipoUsuarioRef.current.value === 'Ayudante de albañil' ||
                       tipoUsuarioRef.current.value === 'Peón'
                     ) {
+                      setValue('login', 'N/A')
                       setValue('contraseña', 'N/A')
                       return
                     }
+                    setValue('login', '')
                     setValue('contraseña', '')
+                    setIsLoginEditable(true)
                   }}
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                   value={tipoUsuario}
@@ -238,6 +248,36 @@ const EditUserForm = ({ userId }) => {
                 tipoUsuario === 'Capataz de obra' ||
                 tipoUsuario === '') && (
                 <>
+                  <div className="relative flex items-center mt-4">
+                    <span className="absolute">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-6 h-6 mx-3 text-gray-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </span>
+                    <input
+                      type="text"
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.login?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                      placeholder="Login"
+                      {...register('login')}
+                      readOnly={
+                        (tipoUsuario === 'Director de obra' ||
+                          tipoUsuario === 'Capataz de obra') &&
+                        !isLoginEditable
+                      }
+                    />
+                  </div>
+                  <ErrorMessage message={errors.login?.message} />
                   <div className="relative flex items-center mt-4">
                     <span className="absolute">
                       <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />

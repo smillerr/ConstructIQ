@@ -4,7 +4,7 @@ const requiredField = 'Este campo es obligatorio'
 
 const credentialsSchema = yup
   .object({
-    username: yup.string().required(requiredField),
+    login: yup.string().required(requiredField),
     password: yup.string().required(requiredField),
   })
   .required()

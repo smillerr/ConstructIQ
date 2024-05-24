@@ -1,4 +1,6 @@
+import { auth } from '../endpoints/authentication'
 import { users } from '../endpoints/users'
+import { getAccessToken, storeSessionAction } from './actions'
 
 export const fetchData = async (
   url,
@@ -42,8 +44,24 @@ export const handleCreateUserForm = async (
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
+  // * Right now this approach is not supported because the backend is not ready to handle this,
+  // * but it will be implemented in the future
+  if (data?.login === 'N/A') {
+    delete data.login
+    delete data.password
+  }
 
   await createUser(data, routingCallback, errorCallback)
+}
+// * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
+export const generateRandomString = () => {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < 10; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
 }
 
 export const handleEditUserForm = async (
@@ -54,7 +72,9 @@ export const handleEditUserForm = async (
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
-
+  if (data?.login === 'N/A') {
+    // * This approach is temporary, once the backend is ready to handle this, the following line will be removed or changed
+  }
   await editUser(data, routingCallback, errorCallback)
 }
 export const handleUserLogin = async (
@@ -76,7 +96,7 @@ export const handleUserLogin = async (
     }
     const data = await response.json()
     if (data.access) {
-      localStorage.setItem('token', data.access)
+      storeSessionAction(data.access, data.refresh, data.user)
       errorCallback('')
       routingCallback('/home/usuarios')
     }
@@ -89,12 +109,13 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
   const body = JSON.stringify(userData)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${access_token}`,
       },
       body,
     })
@@ -106,7 +127,7 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
     if (res.ok) {
       errorCallback('')
       routingCallback('/home/usuarios')
-      return res.json()
+      return await res.json()
     }
   } catch (_) {
     const errorMessage = 'Hubo un error al crear el usuario, intente mas tarde'
@@ -116,28 +137,28 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
 
 export const deleteUser = async (id) => {
   const url = users.updateUser(id)
-  const method = 'PATCH'
-  const body = JSON.stringify({ activo: false })
+  const method = 'DELETE'
+  const access_token = await getAccessToken()
   return await fetch(url, {
     method,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${access_token}`,
     },
-    body,
   })
 }
 export const listUser = async () => {
   const url = users.getAllUsers
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       cache: 'no-cache',
     })
     if (res.ok) {
-      return res.json()
+      return await res.json()
     }
     return []
   } catch (error) {
@@ -147,15 +168,16 @@ export const listUser = async () => {
 
 export const getUser = async (id) => {
   const url = users.getUserById(id)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       cache: 'no-cache',
     })
     if (res.ok) {
-      return res.json()
+      return await res.json()
     }
     return {}
   } catch (error) {
@@ -167,22 +189,40 @@ export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PUT'
   const body = JSON.stringify(userData)
+  const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${access_token}`,
       },
       body,
     })
     if (res.ok) {
       errorCallback('')
       routingCallback('/home/usuarios')
-      return res.json()
+      return await res.json()
     }
   } catch (_) {
     const errorMessage = 'Hubo un error al editar el usuario, intente mas tarde'
     errorCallback(errorMessage)
   }
+}
+
+export const refreshToken = async (refresher) => {
+  const url = auth.refreshToken
+  const method = 'POST'
+  const body = JSON.stringify({ refresh: refresher })
+  const res = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body,
+  })
+  if (res.ok) {
+    return { res: await res.json(), valid: true }
+  }
+  return { res: {}, valid: false }
 }
