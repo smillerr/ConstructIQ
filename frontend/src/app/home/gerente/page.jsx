@@ -1,7 +1,12 @@
+'use client'
+import React from 'react'
+import DashboardOvervIew from '@/ui/dashboard/dashboardOvervIew'
+
 const Gerente = () => {
   return (
     <>
-      <p>Dashboard para el gerente</p>
+      <p>Dashboard Gerente</p>
+      <DashboardOvervIew />
     </>
   )
 }
