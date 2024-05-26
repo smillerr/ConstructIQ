@@ -8,7 +8,7 @@ export function storeSession(access_token, refresh_token, userData) {
     refresh: refresh_token,
     user: userData,
   }
-  const expires = new Date(Date.now() + 60 * 5 * 1000)
+  const expires = new Date(Date.now() + 60 * 1440 * 1000)
   cookies().set('session', JSON.stringify(session), { expires, httpOnly: true })
 }
 
@@ -21,13 +21,11 @@ export function getSession() {
 export async function updateSession(request) {
   const session = request.cookies.get('session')?.value
   if (!session) return
-  console.log('Inside middelware')
   // Refresh the session so it doesn't expire
   const parsedSession = JSON.parse(session)
   const refreshedSession = await refreshToken(parsedSession.refresh)
-  console.log(refreshedSession)
   if (refreshedSession.valid === false) {
-    console.log('Expired refresh token, must redirect to login')
+    return NextResponse.redirect(new URL('/', request.url))
   }
   delete refreshedSession.valid
   const res = NextResponse.next()
@@ -37,7 +35,7 @@ export async function updateSession(request) {
       user: parsedSession?.user || '',
       ...refreshedSession.res,
     }),
-    expires: new Date(Date.now() + 60 * 5 * 1000),
+    expires: new Date(Date.now() + 60 * 1440 * 1000),
   })
   return res
 }
