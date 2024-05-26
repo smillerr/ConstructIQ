@@ -10,18 +10,16 @@ import { usePathname } from 'next/navigation'
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 
-const role = 'gerente' // This would be the user's role from the currente session.
-const links = [
-  { name: 'Dashboard', href: `/home/${role}`, icon: HomeIcon },
-  {
-    name: 'Usuarios',
-    href: '/home/usuarios',
-    icon: UserGroupIcon,
-  },
-  { name: 'Obras', href: '/home/obras', icon: WrenchScrewdriverIcon },
-]
-
-export default function SideNavLinks() {
+export default function SideNavLinks(homePath) {
+  const links = [
+    { name: 'Dashboard', href: homePath, icon: HomeIcon },
+    {
+      name: 'Usuarios',
+      href: '/home/usuarios',
+      icon: UserGroupIcon,
+    },
+    { name: 'Obras', href: '/home/obras', icon: WrenchScrewdriverIcon },
+  ]
   const path = usePathname()
   return (
     <>

@@ -226,3 +226,20 @@ export const refreshToken = async (refresher) => {
   }
   return { res: {}, valid: false }
 }
+
+export const dashboardPaths = (userType) => {
+  let url = ''
+  switch (userType) {
+    case 'Gerente':
+      url = '/home/gerente'
+      break
+    case 'Director de obra':
+      url = '/home/director'
+      break
+    case 'Capataz de obra':
+      return '/home/capataz'
+    default:
+      url = '/'
+  }
+  return url
+}
