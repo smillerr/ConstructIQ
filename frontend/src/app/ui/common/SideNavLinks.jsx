@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation'
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 
-export default function SideNavLinks(homePath) {
+export default function SideNavLinks({ homePath }) {
   const links = [
     { name: 'Dashboard', href: homePath, icon: HomeIcon },
     {

@@ -139,13 +139,21 @@ export const deleteUser = async (id) => {
   const url = users.updateUser(id)
   const method = 'DELETE'
   const access_token = await getAccessToken()
-  return await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`,
-    },
-  })
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
 }
 export const listUser = async () => {
   const url = users.getAllUsers

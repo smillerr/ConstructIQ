@@ -3,16 +3,15 @@ import { PowerIcon } from '@heroicons/react/24/outline'
 import SideNavLinks from './SideNavLinks'
 import ConstructIQLogo from './ConstructIQLogo'
 import { redirect } from 'next/navigation'
-import { getSessionAction } from '@/lib/utils/actions'
 import { dashboardPaths } from '@/lib/utils/utilFunctions'
+import { getSession } from '@/lib/utils/auth'
 
 export default async function SideNav() {
-  const session = await getSessionAction()
-  const userType = await session.user.tipo_usuario
-
+  const session = await getSession()
   if (!session) {
     redirect('/')
   }
+  const userType = await session?.user?.tipo_usuario
   return (
     <div className="flex md:h-full flex-col px-3 py-4 md:px-2">
       <Link
