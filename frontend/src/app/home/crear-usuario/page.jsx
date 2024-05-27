@@ -3,9 +3,6 @@ import UserForm from '@/ui/user/UserForm'
 import { redirect } from 'next/navigation'
 export default async function CrearUsuario() {
   const session = await getSession()
-  if (!session) {
-    redirect('/')
-  }
   if (session?.user?.tipo_usuario !== 'Gerente') {
     redirect('/home/usuarios')
   }
