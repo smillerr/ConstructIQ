@@ -20,14 +20,20 @@ class Obra(models.Model):
     id_capataz = models.ManyToManyField(
     Usuario,
     related_name='obras_asignadas',
-    limit_choices_to={'tipo_usuario': 'Capataz de obra'}
+    limit_choices_to={
+        'tipo_usuario': 'Capataz de obra',
+        'is_active' : True
+    }
     )
 
     id_director= models.ForeignKey(
     Usuario,
     related_name='obras_dirigidas',
     on_delete=models.CASCADE,
-    limit_choices_to={'tipo_usuario': 'Director de obra'}
+    limit_choices_to={
+        'tipo_usuario': 'Director de obra',
+        'is_active' : True
+    }
     ) # many to many, para satisfacer elicitación pregunta 1, grupo 12: "Puede ser que sí tengamos varios capataces para una obra porque hay obras muy grandes que requieren varias cuadrillas de trabajadores."
 
 
@@ -37,7 +43,7 @@ class Obra(models.Model):
         self.activo = False
         self.save()
 
-    def __str__(self):
+    def __str__(self):  
         return self.nombre
 
     # Método para obtener solo obras activas
@@ -50,15 +56,19 @@ class Obra(models.Model):
 class ObraPersonal(models.Model):
     id_obra = models.ForeignKey(Obra, on_delete=models.CASCADE)
     TIPOS_USUARIO_OBRA = (
-        ('Peon', 'Peón'),
+        ('Peón', 'Peón'),
         ('Ayudante de albañil', 'Ayudante de albañil'),
     )
-    tipo_usuario = models.CharField(max_length=20
-    , choices=TIPOS_USUARIO_OBRA,default='Peón')
+    # tipo_usuario = models.CharField(max_length=20
+    # , choices=TIPOS_USUARIO_OBRA,default='Peón')
 
     id_usuario = models.ForeignKey(
     Usuario,
     on_delete=models.CASCADE,
+    limit_choices_to={
+        'tipo_usuario' : 'Peón',
+        'is_active' : True
+    }
     )
 
     
