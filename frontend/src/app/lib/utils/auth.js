@@ -12,6 +12,10 @@ export function storeSession(access_token, refresh_token, userData) {
   cookies().set('session', JSON.stringify(session), { expires, httpOnly: true })
 }
 
+export function deleteSession() {
+  //Destroy the session
+  cookies().set('session', '', { expires: new Date(0) })
+}
 export function getSession() {
   const session = cookies().get('session')?.value
   if (!session) return null

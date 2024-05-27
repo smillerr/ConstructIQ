@@ -5,7 +5,6 @@ import { dashboardPaths } from './lib/utils/utilFunctions'
 
 export default async function Home() {
   const session = await getSession()
-
   if (session) {
     const userType = await session.user.tipo_usuario
     redirect(dashboardPaths(userType))

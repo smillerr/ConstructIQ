@@ -98,7 +98,7 @@ export const handleUserLogin = async (
     if (data.access) {
       storeSessionAction(data.access, data.refresh, data.user)
       errorCallback('')
-      routingCallback('/home/usuarios')
+      routingCallback(dashboardPaths(data.user.tipo_usuario))
     }
   } catch (_) {
     const errorMessage = 'Hubo un error al iniciar sesion, intente mas tarde'
