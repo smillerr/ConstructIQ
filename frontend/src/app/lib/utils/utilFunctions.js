@@ -44,13 +44,9 @@ export const handleCreateUserForm = async (
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
-  // * Right now this approach is not supported because the backend is not ready to handle this,
-  // * but it will be implemented in the future
   if (data?.login === 'N/A') {
     delete data.login
-    delete data.password
   }
-
   await createUser(data, routingCallback, errorCallback)
 }
 // * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
@@ -73,8 +69,10 @@ export const handleEditUserForm = async (
     delete data.foto_perfil
   }
   if (data?.login === 'N/A') {
-    // * This approach is temporary, once the backend is ready to handle this, the following line will be removed or changed
+    delete data.login
+    delete data.password
   }
+  if (data?.password === 'N/A' || data?.password === '') delete data.password
   await editUser(data, routingCallback, errorCallback)
 }
 export const handleUserLogin = async (
@@ -108,7 +106,7 @@ export const handleUserLogin = async (
 export const createUser = async (userData, routingCallback, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
-  const body = JSON.stringify(userData)
+  const body = new URLSearchParams(userData)
   const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
@@ -195,7 +193,7 @@ export const getUser = async (id) => {
 
 export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
-  const method = 'PUT'
+  const method = 'PATCH'
   const body = JSON.stringify(userData)
   const access_token = await getAccessToken()
   try {

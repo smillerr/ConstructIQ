@@ -89,7 +89,8 @@ export default function UserList() {
                             setSelectedUserId(user.id)
                             setOpenModal(true)
                           }}
-                          className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                          className="flex items-center justify-center mr-3 text-sm bg-red-600 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline disabled:bg-disabled-red disabled:border-slate-200 disabled:shadow-none"
+                          disabled={user?.tipo_usuario === 'Gerente'}
                         >
                           <TrashIcon className="h-5 w-5 text-white-600" />
                           <p className="hidden ml-1 md:block"> Eliminar </p>
