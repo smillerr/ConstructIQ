@@ -1,5 +1,4 @@
-//import DashboardOvervIew from '@/ui/dashboard/dashboardOvervIew'
-
+import DashboardOvervIew from '@/ui/dashboard/dashboardOvervIew'
 import { getSession } from '@/lib/utils/auth'
 import { redirect } from 'next/navigation'
 
@@ -11,8 +10,7 @@ export default async function Gerente() {
   return (
     <>
       <p>Dashboard Gerente</p>
-      {/*       <DashboardOvervIew />
-       */}{' '}
+      <DashboardOvervIew />
     </>
   )
 }
