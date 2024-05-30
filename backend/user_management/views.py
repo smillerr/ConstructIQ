@@ -57,6 +57,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
+        new_tipo_usuario = request.data.get('tipo_usuario')
+        if new_tipo_usuario == "Peón" or new_tipo_usuario == 'Ayudante de albañil':
+            serializer.validated_data['login'] = None
         # Hash the new password if it's provided
         password = request.data.get('password')
         if password:
