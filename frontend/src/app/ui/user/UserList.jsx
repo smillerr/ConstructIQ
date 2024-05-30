@@ -79,7 +79,17 @@ export default function UserList() {
                       <div className="flex items-center justify-end">
                         <Link
                           href={`usuarios/${user.id}`}
-                          className="flex items-center justify-center mr-3 text-sm bg-blue-600 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                          className={`flex items-center justify-center mr-3 text-sm ${
+                            user?.tipo_usuario === 'Gerente'
+                              ? 'bg-blue-200'
+                              : 'bg-blue-600 hover:bg-blue-700'
+                          }  text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline`}
+                          style={{
+                            pointerEvents:
+                              user?.tipo_usuario === 'Gerente'
+                                ? 'none'
+                                : 'auto',
+                          }}
                         >
                           <PencilIcon className="h-5 w-5 text-white-600" />
                           <p className="hidden ml-1 md:block"> Editar </p>

@@ -40,6 +40,7 @@ export async function updateSession(request) {
       ...refreshedSession.res,
     }),
     expires: new Date(Date.now() + 60 * 1440 * 1000),
+    httpOnly: true,
   })
   return res
 }

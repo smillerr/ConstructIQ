@@ -65,14 +65,17 @@ export const handleEditUserForm = async (
   routingCallback,
   errorCallback,
 ) => {
+  delete data?.last_login
+  delete data?.user_permissions
+  delete data?.groups
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
+  if (data?.password === '') delete data.password
   if (data?.login === 'N/A') {
     delete data.login
-    delete data.password
   }
-  if (data?.password === 'N/A' || data?.password === '') delete data.password
+
   await editUser(data, routingCallback, errorCallback)
 }
 export const handleUserLogin = async (
@@ -194,13 +197,13 @@ export const getUser = async (id) => {
 export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PATCH'
-  const body = JSON.stringify(userData)
+  const body = new URLSearchParams(userData)
   const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${access_token}`,
       },
       body,
@@ -245,7 +248,7 @@ export const dashboardPaths = (userType) => {
     case 'Capataz de obra':
       return '/home/capataz'
     default:
-      url = '/'
+      url = '/ungranted-access'
   }
   return url
 }
