@@ -252,3 +252,8 @@ export const dashboardPaths = (userType) => {
   }
   return url
 }
+
+export const needsNewToken = (expiresAt) => {
+  const currentTime = new Date()
+  return currentTime > new Date(expiresAt)
+}
