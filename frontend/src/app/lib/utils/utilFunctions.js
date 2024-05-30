@@ -44,13 +44,9 @@ export const handleCreateUserForm = async (
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
-  // * Right now this approach is not supported because the backend is not ready to handle this,
-  // * but it will be implemented in the future
   if (data?.login === 'N/A') {
     delete data.login
-    delete data.password
   }
-
   await createUser(data, routingCallback, errorCallback)
 }
 // * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
@@ -69,12 +65,17 @@ export const handleEditUserForm = async (
   routingCallback,
   errorCallback,
 ) => {
+  delete data?.last_login
+  delete data?.user_permissions
+  delete data?.groups
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
+  if (data?.password === '') delete data.password
   if (data?.login === 'N/A') {
-    // * This approach is temporary, once the backend is ready to handle this, the following line will be removed or changed
+    delete data.login
   }
+
   await editUser(data, routingCallback, errorCallback)
 }
 export const handleUserLogin = async (
@@ -98,7 +99,7 @@ export const handleUserLogin = async (
     if (data.access) {
       storeSessionAction(data.access, data.refresh, data.user)
       errorCallback('')
-      routingCallback('/home/usuarios')
+      routingCallback(dashboardPaths(data.user.tipo_usuario))
     }
   } catch (_) {
     const errorMessage = 'Hubo un error al iniciar sesion, intente mas tarde'
@@ -108,7 +109,7 @@ export const handleUserLogin = async (
 export const createUser = async (userData, routingCallback, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
-  const body = JSON.stringify(userData)
+  const body = new URLSearchParams(userData)
   const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
@@ -139,13 +140,21 @@ export const deleteUser = async (id) => {
   const url = users.updateUser(id)
   const method = 'DELETE'
   const access_token = await getAccessToken()
-  return await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${access_token}`,
-    },
-  })
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
 }
 export const listUser = async () => {
   const url = users.getAllUsers
@@ -187,14 +196,14 @@ export const getUser = async (id) => {
 
 export const editUser = async (userData, routingCallback, errorCallback) => {
   const url = users.updateUser(userData.id)
-  const method = 'PUT'
-  const body = JSON.stringify(userData)
+  const method = 'PATCH'
+  const body = new URLSearchParams(userData)
   const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: `Bearer ${access_token}`,
       },
       body,
@@ -225,4 +234,26 @@ export const refreshToken = async (refresher) => {
     return { res: await res.json(), valid: true }
   }
   return { res: {}, valid: false }
+}
+
+export const dashboardPaths = (userType) => {
+  let url = ''
+  switch (userType) {
+    case 'Gerente':
+      url = '/home/gerente'
+      break
+    case 'Director de obra':
+      url = '/home/director'
+      break
+    case 'Capataz de obra':
+      return '/home/capataz'
+    default:
+      url = '/ungranted-access'
+  }
+  return url
+}
+
+export const needsNewToken = (expiresAt) => {
+  const currentTime = new Date()
+  return currentTime > new Date(expiresAt)
 }

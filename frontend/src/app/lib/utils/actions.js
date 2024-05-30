@@ -1,6 +1,6 @@
 'use server'
 
-import { getSession, storeSession } from './auth'
+import { deleteSession, getSession, storeSession } from './auth'
 
 export async function storeSessionAction(
   access_token,
@@ -17,4 +17,8 @@ export async function getSessionAction() {
 export async function getAccessToken() {
   const session = getSession()
   return session?.access
+}
+
+export async function logOut() {
+  return deleteSession()
 }

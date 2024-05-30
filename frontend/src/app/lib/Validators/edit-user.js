@@ -26,10 +26,7 @@ const userSchema = yup
       .matches(/^[0-9]{10}$/, invalidPhone)
       .required(requiredField)
       .max(10, maxCharacters(10)),
-    contraseña: yup
-      .string()
-      .required(requiredField)
-      .max(100, maxCharacters(100)),
+    login: yup.string().required(requiredField).max(100, maxCharacters(100)),
     direccion: yup
       .string()
       .required(requiredField)
