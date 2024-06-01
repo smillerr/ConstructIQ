@@ -53,8 +53,8 @@ class Obra(models.Model):
 )
     tipo_obra = models.CharField(max_length=25, choices= TIPO_OBRA, default='edificio') 
 
-    # fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
-    # fecha_final = models.DateField(default= timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
+    fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
+    fecha_final = models.DateField(default=timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
 
 
 
