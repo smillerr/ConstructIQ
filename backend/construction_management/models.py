@@ -1,5 +1,8 @@
 from django.db import models
 from user_management.models import Usuario
+from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
 # Create your models here.
 
 class Obra(models.Model):
@@ -7,8 +10,6 @@ class Obra(models.Model):
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(null=False,default='')
     ubicacion = models.CharField(max_length=100)
-    tipo_obra = models.CharField(max_length=50)
-    activo = models.BooleanField(default=True) # Elicitación Grupo 1, pregunta 7 una obra no se borra, se inahbilita
     ESTADOS_OBRA = (
         ('nueva', 'Nueva'),
         ('en desarrollo', 'En desarrollo'),
@@ -35,6 +36,28 @@ class Obra(models.Model):
         'is_active' : True
     }
     ) # many to many, para satisfacer elicitación pregunta 1, grupo 12: "Puede ser que sí tengamos varios capataces para una obra porque hay obras muy grandes que requieren varias cuadrillas de trabajadores."
+    activo = models.BooleanField(default=True) # Elicitación Grupo 1, pregunta 7 una obra no se borra, se inahbilita
+
+    TIPO_OBRA = (
+        ('escuela', 'Escuela'),
+        ('colegio', 'Colegio'),
+        ('conjunto residencial', 'Conjunto residencial'),
+        ('torre de apartamentos', 'Torre de apartamentos'),
+        ('vial', 'Vial'),
+        ('edificio', 'Edificio'),
+        ('tienda', 'Tienda'),
+        ('casa', 'Casa'),
+        ('hospital', 'Hospital'),
+        ('fábrica', 'Fábrica'),
+        ('otros', 'Otros')
+)
+    tipo_obra = models.CharField(max_length=25, choices= TIPO_OBRA, default='edificio') 
+
+    # fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
+    # fecha_final = models.DateField(default= timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
+
+
+
 
 
 
@@ -60,15 +83,14 @@ class ObraPersonal(models.Model):
         ('Ayudante de albañil', 'Ayudante de albañil'),
     )
     # tipo_usuario = models.CharField(max_length=20
-    # , choices=TIPOS_USUARIO_OBRA,default='Peón')
+    #  , choices=TIPOS_USUARIO_OBRA,default='Peón')
 
     id_usuario = models.ForeignKey(
     Usuario,
     on_delete=models.CASCADE,
-    limit_choices_to={
-        'tipo_usuario' : 'Peón',
-        'is_active' : True
-    }
+    limit_choices_to=Q(
+            tipo_usuario__in=['Peón', 'Ayudante de albañil'],
+            is_active=True
+        )
     )
 
-    
