@@ -1,43 +1,29 @@
 'use client'
-import credentialsSchema from '@/lib/Validators/user-login'
-import ConstructIQLogo from '@/ui/common/ConstructIQLogo'
 import { UserIcon } from '@heroicons/react/24/outline'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
 import ErrorMessage from '../common/Forms/ErrorMessage'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
-import { useRouter } from 'next/navigation'
-import { handleUserLogin } from '@/lib/utils/utilFunctions'
 import { Alert } from '@mui/material'
 import { useState } from 'react'
-import ReCAPTCHA from 'react-google-recaptcha'
 
-const UserLoginForm = () => {
+const AddStaffForm = ({ submitHandler }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(credentialsSchema),
-  })
-  const router = useRouter()
+  } = useForm()
   const [error, setError] = useState('')
-  const [captchaValue, setCaptchaValue] = useState(null)
 
   const onSubmit = (data) => {
-    if (!captchaValue) {
-      setError('Por favor, complete el captcha antes de enviar el formulario.')
-      return
-    }
-
-    handleUserLogin(data, router.push, setError)
+    setError('')
+    console.log(data)
+    submitHandler()
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md">
-      <ConstructIQLogo isLogin />
       <h1 className="mt-3 text-2xl font-semibold text-gray-800 capitalize sm:text-3xl">
-        Sign in
+        Añadir personal
       </h1>
       <div className="relative flex items-center mt-8">
         <span className="absolute">
@@ -83,14 +69,6 @@ const UserLoginForm = () => {
           {...register('password')}
         />
       </div>
-      <ErrorMessage message={errors.password?.message} />
-      <div className="flex justify-center">
-        <ReCAPTCHA
-          className="mt-4"
-          sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
-          onChange={(value) => setCaptchaValue(value)}
-        />
-      </div>
 
       {error && (
         <Alert variant="filled" severity="error" className="mt-4">
@@ -99,11 +77,11 @@ const UserLoginForm = () => {
       )}
       <div className="mt-6">
         <button className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-          Sign in
+          Añadir
         </button>
       </div>
     </form>
   )
 }
 
-export default UserLoginForm
+export default AddStaffForm

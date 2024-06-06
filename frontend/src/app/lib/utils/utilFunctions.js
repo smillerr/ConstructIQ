@@ -257,3 +257,5 @@ export const needsNewToken = (expiresAt) => {
   const currentTime = new Date()
   return currentTime > new Date(expiresAt)
 }
+
+export const libs = ['core', 'maps', 'places']
