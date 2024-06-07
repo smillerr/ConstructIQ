@@ -1,5 +1,28 @@
 import { PlusIcon } from '@heroicons/react/24/outline'
-
+import TaskRow from '../tareas/TaskRow'
+const tareas = [
+  {
+    id: 1,
+    name: 'Tarea 1',
+    status: 'En progreso',
+    cid: 5,
+    cname: 'Colegio Campestre',
+  },
+  {
+    id: 2,
+    name: 'Tarea 2',
+    status: 'En progreso',
+    cid: 7,
+    cname: 'Puente peatonal',
+  },
+  {
+    id: 3,
+    name: 'Tarea 3',
+    status: 'En progreso',
+    cid: 4,
+    cname: 'Casa de la cultura',
+  },
+]
 const TasksSection = () => {
   return (
     <div>
@@ -9,16 +32,16 @@ const TasksSection = () => {
           <PlusIcon className="h-5 w-5" />
         </button>
       </div>
-
-      <div className="border-b border-gray-300 py-2 flex justify-between items-center">
-        <p>
-          <a href="/" className="text-blue-600">
-            #133 Create mockup for view where manager input user data
-          </a>
-        </p>
-        <p className="text-gray-600">New</p>
-        <p className="text-gray-600">Not assigned</p>
-      </div>
+      {tareas?.map((tarea) => (
+        <TaskRow
+          key={tarea.id}
+          id={tarea.id}
+          name={tarea.name}
+          status={tarea.status}
+          constructionId={tarea.cid}
+          constructionName={tarea.cname}
+        />
+      ))}
     </div>
   )
 }
