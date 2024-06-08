@@ -9,7 +9,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
         #exclude = ['password']
 
 class ObraPersonalSerializer(serializers.ModelSerializer):
-    id_usuarios = UsuarioSerializer(many=True, read_only=True)
+    #personal = UsuarioSerializer(many=True, read_only=True)
+    class Meta:
+        model = ObraPersonal
+        fields = '__all__'
+        #exclude = ['id_obra']
+
+#para incluir datos en el obra serializer
+class IncludePersonalSerializer(serializers.ModelSerializer):
+    personal = UsuarioSerializer(many=True, read_only=True)
     class Meta:
         model = ObraPersonal
         #fields = '__all__'
@@ -17,12 +25,23 @@ class ObraPersonalSerializer(serializers.ModelSerializer):
 
 
 class ObraSerializer(serializers.ModelSerializer):
-    obra_personal = ObraPersonalSerializer(source='obrapersonal', read_only=True)
-    id_capataces = UsuarioSerializer(many=True, read_only=True)
-    id_director = UsuarioSerializer(read_only=True)
+    obra_personal = IncludePersonalSerializer(source='obrapersonal', read_only=True)
+    id_capataces = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), many=True, required=False)
+    id_director = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), required=False)
     class Meta:
         model=Obra
         fields = '__all__'
 
+""" 
+    def create(self, validated_data):
+        obra_personal_data = validated_data.pop('obra_personal')
 
+        obra = Obra.objects.create(**validated_data)
 
+        id_obra = obra.id
+
+        # asigna el id de obra en obra a obra personal, para no volverlo a poner
+        ObraPersonal.objects.create(id_obra=obra, **obra_personal_data)
+
+        return obra
+"""
