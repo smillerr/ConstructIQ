@@ -449,4 +449,6 @@ myenv/*
 myenv/
 env/*
 env/
+git-sim_media/
+git-sim_media/*
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,node,python,django,nextjs
