@@ -9,7 +9,7 @@ class ObraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ObraPersonalSerializer(serializers.ModelSerializer):
-    id_usuario = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all())  # Specify queryset here
+    #id_usuario = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all())  # Specify queryset here
 
     class Meta:
         model = ObraPersonal
