@@ -1,13 +1,21 @@
 'use client'
+import { listUser, listUsersByRole } from '@/lib/utils/utilFunctions'
 import userSchema from '@/lib/Validators/create-user'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorMessage from '../common/Forms/ErrorMessage'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
-import { useState } from 'react'
-import { Alert } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+} from '@mui/material'
 
-const ObrasForm = () => {
+export default function CreateUserForm() {
   const schema = userSchema
   const {
     register,
@@ -22,6 +30,50 @@ const ObrasForm = () => {
     console.log(data)
   }
 
+  const [directores, setDirectores] = useState([])
+  const [capataces, setCapataces] = useState([])
+  const [trabajadores, setTrabajadores] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+
+      try {
+        const allUsers = await listUser()
+        const directoresData = await listUsersByRole(
+          allUsers,
+          'Director de obra',
+        )
+        setDirectores(directoresData)
+
+        const capatacesData = await listUsersByRole(allUsers, 'Capataz de obra')
+        setCapataces(capatacesData)
+
+        const peonesData = await listUsersByRole(allUsers, 'Peón')
+        const ayudantesAlbañilData = await listUsersByRole(
+          allUsers,
+          'Ayudante de albañil',
+        )
+        const trabajadoresData = [...peonesData, ...ayudantesAlbañilData]
+        setTrabajadores(trabajadoresData)
+
+        setLoading(false)
+      } catch (error) {
+        console.error('Error al obtener los datos:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const [selectedTrabajadores, setSelectedTrabajadores] = useState([])
+
+  const handleChangeTrabajadores = (event) => {
+    const value = event.target.value
+    setSelectedTrabajadores(value)
+  }
+
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
@@ -34,6 +86,35 @@ const ObrasForm = () => {
             (err) => console.log(err),
           )}
         >
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="trabajadores-label">Trabajadores</InputLabel>
+            <Select
+              labelId="trabajadores-label"
+              id="trabajadores-select"
+              multiple
+              value={selectedTrabajadores}
+              onChange={handleChangeTrabajadores}
+              input={<OutlinedInput label="Trabajadores" />}
+              renderValue={(selected) => (
+                <div>
+                  {selected
+                    .map((value) => {
+                      const trabajador = trabajadores.find(
+                        (t) => t.id === value,
+                      )
+                      return trabajador ? trabajador.nombre : ''
+                    })
+                    .join(', ')}
+                </div>
+              )}
+            >
+              {trabajadores.map((trabajador) => (
+                <MenuItem key={trabajador.id} value={trabajador.id}>
+                  {trabajador.nombre}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
             <div className="w-full flex flex-col">
               <div className="relative flex items-center mt-4">
@@ -88,31 +169,38 @@ const ObrasForm = () => {
               </div>
               <ErrorMessage message={errors.estado?.message} />
 
-              <div className="relative flex items-center mt-4">
-                <select
-                  {...register('id_director')}
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-4 ${errors.id_director?.message ? errorInputClasses : `focus:border-blue-400 focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                >
-                  <option value="">Director</option>
-                  <option value="1">Director 1</option>
-                  <option value="2">Director 2</option>
-                  <option value="3">Director 3</option>
-                </select>
-              </div>
-              <ErrorMessage message={errors.id_director?.message} />
+              <section className="bg-white">
+                {loading ? (
+                  <div>Cargando...</div>
+                ) : (
+                  <div>
+                    {/* Resto del contenido */}
+                    <select
+                      {...register('id_director')}
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-4 ${errors.id_director?.message || errors.id_capataz?.message ? errorInputClasses : `focus:border-blue-400 focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                    >
+                      <option value="">Seleccione un director</option>
+                      {directores.map((director) => (
+                        <option key={director.id} value={director.id}>
+                          {director.nombre}
+                        </option>
+                      ))}
+                    </select>
 
-              <div className="relative flex items-center mt-4">
-                <select
-                  {...register('id_capataz')}
-                  className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-4 ${errors.id_capataz?.message ? errorInputClasses : `focus:border-blue-400 focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                >
-                  <option value="">Capataz</option>
-                  <option value="1">Capataz 1</option>
-                  <option value="2">Capataz 2</option>
-                  <option value="3">Capataz 3</option>
-                </select>
-              </div>
-              <ErrorMessage message={errors.id_capataz?.message} />
+                    <select
+                      {...register('id_capataz')}
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-4 ${errors.id_director?.message || errors.id_capataz?.message ? errorInputClasses : `focus:border-blue-400 focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                    >
+                      <option value="">Seleccione un capataz</option>
+                      {capataces.map((capataz) => (
+                        <option key={capataz.id} value={capataz.id}>
+                          {capataz.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </section>
             </div>
           </section>
           <div className="mt-4">
@@ -122,6 +210,7 @@ const ObrasForm = () => {
                 {fetchError}
               </Alert>
             )}
+
             <button
               className="w-full px-6 py-3 mt-4 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               type="submit"
@@ -134,5 +223,3 @@ const ObrasForm = () => {
     </section>
   )
 }
-
-export default ObrasForm
