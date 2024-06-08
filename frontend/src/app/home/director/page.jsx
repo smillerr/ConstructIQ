@@ -1,8 +1,12 @@
-'use client'
+import { getSession } from '@/lib/utils/auth'
 import DashboardOvervIew from '@/ui/dashboard/dashboardOvervIew'
-import React from 'react'
+import { redirect } from 'next/navigation'
 
-const Director = () => {
+export default async function Director() {
+  const session = await getSession()
+  if (session?.user?.tipo_usuario !== 'Director de obra') {
+    redirect('/home/usuarios')
+  }
   return (
     <>
       <p>Dashbboard Director</p>
@@ -10,5 +14,3 @@ const Director = () => {
     </>
   )
 }
-
-export default Director

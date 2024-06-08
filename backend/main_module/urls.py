@@ -29,6 +29,7 @@ urlpatterns = [
     path('docs/', include_docs_urls(title='Api Documentation')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('dashboards/', include('dashboards.urls')),
 
 
 ]

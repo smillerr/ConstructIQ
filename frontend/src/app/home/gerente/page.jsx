@@ -1,8 +1,12 @@
-'use client'
-import React from 'react'
 import DashboardOvervIew from '@/ui/dashboard/dashboardOvervIew'
+import { getSession } from '@/lib/utils/auth'
+import { redirect } from 'next/navigation'
 
-const Gerente = () => {
+export default async function Gerente() {
+  const session = await getSession()
+  if (session?.user?.tipo_usuario !== 'Gerente') {
+    redirect('/home/usuarios')
+  }
   return (
     <>
       <p>Dashboard Gerente</p>
@@ -10,5 +14,3 @@ const Gerente = () => {
     </>
   )
 }
-
-export default Gerente

@@ -1,5 +1,5 @@
 'use client'
-import userSchema from '@/lib/Validators/create-user'
+import userSchema from '@/lib/Validators/edit-user'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
 import { getUser, handleEditUserForm } from '@/lib/utils/utilFunctions'
 import { LockClosedIcon, MapPinIcon } from '@heroicons/react/24/outline'
@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ErrorMessage from '../common/Forms/ErrorMessage'
 import { Alert } from '@mui/material'
+import { getSessionAction } from '@/lib/utils/actions'
 const EditUserForm = ({ userId }) => {
   const schema = userSchema
   const {
@@ -31,6 +32,13 @@ const EditUserForm = ({ userId }) => {
   useEffect(() => {
     async function getUserData() {
       const userData = await getUser(userId)
+      const session = await getSessionAction()
+      if (
+        userData?.tipo_usuario === 'Gerente' ||
+        session?.user?.tipo_usuario !== 'Gerente'
+      ) {
+        router.replace('/home/usuarios')
+      }
       console.log(userData)
       populateForm(userData)
       setTipoUsuario(userData.tipo_usuario)
@@ -188,11 +196,11 @@ const EditUserForm = ({ userId }) => {
                       tipoUsuarioRef.current.value === 'Peón'
                     ) {
                       setValue('login', 'N/A')
-                      setValue('contraseña', 'N/A')
+                      setValue('password', 'N/A')
                       return
                     }
                     setValue('login', '')
-                    setValue('contraseña', '')
+                    setValue('password', '')
                     setIsLoginEditable(true)
                   }}
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
@@ -278,18 +286,23 @@ const EditUserForm = ({ userId }) => {
                     />
                   </div>
                   <ErrorMessage message={errors.login?.message} />
-                  <div className="relative flex items-center mt-4">
-                    <span className="absolute">
-                      <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />
-                    </span>
-                    <input
-                      type="text"
-                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.contraseña?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                      placeholder="Contraseña"
-                      {...register('contraseña')}
-                    />
-                  </div>
-                  <ErrorMessage message={errors.contraseña?.message} />
+                  {(tipoUsuario === 'Director de obra' ||
+                    tipoUsuario === 'Capataz de obra' ||
+                    tipoUsuario === '') && (
+                    <>
+                      <div className="relative flex items-center mt-4">
+                        <span className="absolute">
+                          <LockClosedIcon className="w-6 h-6 mx-3 text-gray-300" />
+                        </span>
+                        <input
+                          type="text"
+                          className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.password?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                          placeholder="password"
+                          {...register('password')}
+                        />
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </div>

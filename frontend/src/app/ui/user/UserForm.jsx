@@ -171,11 +171,11 @@ const UserForm = () => {
                       tipoUsuarioRef.current.value === 'Peón'
                     ) {
                       setValue('login', 'N/A')
-                      setValue('contraseña', 'N/A')
+                      setValue('password', 'N/A')
                       return
                     }
                     setValue('login', '')
-                    setValue('contraseña', '')
+                    setValue('password', '')
                   }}
                   className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.tipo_usuario?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                 >
@@ -260,12 +260,12 @@ const UserForm = () => {
                     </span>
                     <input
                       type="text"
-                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.contraseña?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
-                      placeholder="Contraseña"
-                      {...register('contraseña')}
+                      className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 ${errors.password?.message ? errorInputClasses : `focus:border-blue-400  focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
+                      placeholder="password"
+                      {...register('password')}
                     />
                   </div>
-                  <ErrorMessage message={errors.contraseña?.message} />
+                  <ErrorMessage message={errors.password?.message} />
                 </>
               )}
             </div>
