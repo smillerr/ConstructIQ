@@ -175,6 +175,15 @@ export const listUser = async () => {
   }
 }
 
+export const listUsersByRole = async (userList, tipoUsuario) => {
+  const usersByRole = userList?.filter(
+    (user) => user.tipo_usuario === tipoUsuario,
+  )
+  const activeUsersByRole = usersByRole.filter(
+    (user) => user.is_active === true,
+  )
+  return activeUsersByRole
+}
 export const getUser = async (id) => {
   const url = users.getUserById(id)
   const access_token = await getAccessToken()
