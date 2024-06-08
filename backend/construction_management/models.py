@@ -18,7 +18,7 @@ class Obra(models.Model):
     )
     estado = models.CharField(max_length=20, choices=ESTADOS_OBRA, default='nueva')
 
-    id_capataz = models.ManyToManyField(
+    id_capataces = models.ManyToManyField(
     Usuario,
     related_name='obras_asignadas',
     limit_choices_to={
@@ -66,8 +66,8 @@ class Obra(models.Model):
         self.activo = False
         self.save()
 
-    def __str__(self):  
-        return self.nombre
+    # def __str__(self):  
+        # return self.nombre
 
     # Método para obtener solo obras activas
     @classmethod
@@ -85,7 +85,7 @@ class ObraPersonal(models.Model):
     # tipo_usuario = models.CharField(max_length=20
     #  , choices=TIPOS_USUARIO_OBRA,default='Peón')
 
-    id_usuarios = models.ManyToManyField(
+    personal = models.ManyToManyField(
     Usuario,
     limit_choices_to=Q(
             tipo_usuario__in=['Peón', 'Ayudante de albañil'],
