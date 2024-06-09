@@ -18,7 +18,7 @@ class Obra(models.Model):
     )
     estado = models.CharField(max_length=20, choices=ESTADOS_OBRA, default='nueva')
 
-    id_capataz = models.ManyToManyField(
+    id_capataces = models.ManyToManyField(
     Usuario,
     related_name='obras_asignadas',
     limit_choices_to={
@@ -66,8 +66,8 @@ class Obra(models.Model):
         self.activo = False
         self.save()
 
-    def __str__(self):  
-        return self.nombre
+    # def __str__(self):  
+        # return self.nombre
 
     # Método para obtener solo obras activas
     @classmethod
@@ -77,7 +77,7 @@ class Obra(models.Model):
 
 
 class ObraPersonal(models.Model):
-    id_obra = models.ForeignKey(Obra, on_delete=models.CASCADE)
+    id_obra = models.OneToOneField(Obra, on_delete=models.CASCADE, primary_key = True) #quiero que la ide de obra personal sea la de id_obra
     TIPOS_USUARIO_OBRA = (
         ('Peón', 'Peón'),
         ('Ayudante de albañil', 'Ayudante de albañil'),
@@ -85,9 +85,8 @@ class ObraPersonal(models.Model):
     # tipo_usuario = models.CharField(max_length=20
     #  , choices=TIPOS_USUARIO_OBRA,default='Peón')
 
-    id_usuario = models.ForeignKey(
+    personal = models.ManyToManyField(
     Usuario,
-    on_delete=models.CASCADE,
     limit_choices_to=Q(
             tipo_usuario__in=['Peón', 'Ayudante de albañil'],
             is_active=True
