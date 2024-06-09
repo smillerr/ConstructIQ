@@ -31,6 +31,7 @@ class ObraSerializer(serializers.ModelSerializer):
     personal_info = IncludePersonalSerializer(source='obrapersonal', read_only=True)
     id_capataces = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), many=True, required=False)
     id_director = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), required=False)
+    ubicacion = serializers.JSONField()
 
     class Meta:
         model=Obra
@@ -46,6 +47,19 @@ class ObraSerializer(serializers.ModelSerializer):
         representation['id_capataces'] = UsuarioSerializer(instance.id_capataces, many=True).data
         representation['id_director'] = UsuarioSerializer(instance.id_director).data
         return representation
+
+    def validate_ubicacion(self, value):
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("Ubicación debe contener 'latitud' y 'longitud'.")
+        
+        if 'latitud' not in value or 'longitud' not in value:
+            raise serializers.ValidationError("Ubicación debe contener 'latitud' y 'longitud'.")
+        
+        if not isinstance(value['latitud'], (float, int)) or not isinstance(value['longitud'], (float, int)):
+            raise serializers.ValidationError("'latitud' y 'longitud' deben ser números.")
+
+        return value
+
 
 
     def create(self, validated_data):

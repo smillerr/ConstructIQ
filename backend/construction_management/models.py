@@ -1,6 +1,6 @@
 from django.db import models
 from user_management.models import Usuario
-from django.db.models import Q
+from django.db.models import Q, JSONField
 from django.utils import timezone
 from datetime import timedelta
 # Create your models here.
@@ -9,7 +9,8 @@ class Obra(models.Model):
 
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(null=False,default='')
-    ubicacion = models.CharField(max_length=100)
+    #ubicacion = models.CharField(max_length=100)
+    ubicacion = JSONField(null=True, blank=True)
     ESTADOS_OBRA = (
         ('nueva', 'Nueva'),
         ('en desarrollo', 'En desarrollo'),
