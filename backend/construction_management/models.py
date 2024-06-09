@@ -53,13 +53,10 @@ class Obra(models.Model):
         ('otros', 'Otros')
 )
     tipo_obra = models.CharField(max_length=25, choices= TIPO_OBRA, default='edificio') 
-
     fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
     fecha_final = models.DateField(default=timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
 
-
-
-
+    img_obra = models.ImageField(upload_to='images/')
 
 
     def delete(self, *args, **kwargs):
@@ -74,7 +71,6 @@ class Obra(models.Model):
     @classmethod
     def obras_activas(cls):
         return cls.objects.filter(activo=True)
-
 
 
 class ObraPersonal(models.Model):
