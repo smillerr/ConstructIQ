@@ -9,5 +9,4 @@
 ## june 08 
 
 * obras and obrapersonal serializers now working together (kinda)
-
-
+* obra_personal_read ObraSerializer field in serializers changed to personal_info

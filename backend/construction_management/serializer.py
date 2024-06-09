@@ -28,16 +28,16 @@ class IncludePersonalSerializer(serializers.ModelSerializer):
 
 class ObraSerializer(serializers.ModelSerializer):
     obra_personal = ObraPersonalSerializer(source='obrapersonal', read_only=False)
-    obra_personal_read = IncludePersonalSerializer(source='obrapersonal', read_only=True)
+    personal_info = IncludePersonalSerializer(source='obrapersonal', read_only=True)
     id_capataces = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), many=True, required=False)
     id_director = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), required=False)
 
     class Meta:
         model=Obra
         #fields = '__all__'
-        fields = ['id', 'obra_personal', 'obra_personal_read', 'id_capataces', 'id_director', 'nombre', 'descripcion', 'ubicacion', 'estado', 'activo', 'tipo_obra', 'fecha_inicio', 'fecha_final']
+        fields = ['id', 'obra_personal', 'personal_info', 'id_capataces', 'id_director', 'nombre', 'descripcion', 'ubicacion', 'estado', 'activo', 'tipo_obra', 'fecha_inicio', 'fecha_final']
         extra_kwargs = {
-            'obra_personal_read': {'read_only': True},
+            'personal_info': {'read_only': True},
         }
 
 
