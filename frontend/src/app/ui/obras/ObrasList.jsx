@@ -1,4 +1,5 @@
 'use client'
+import Link from 'next/link'
 import React, { useState } from 'react'
 
 const ObrasList = () => {
@@ -54,9 +55,13 @@ const ObrasList = () => {
               <span className="text-gray-500">{obra.fecha}</span>
             </div>
           ))}
-          <button className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded">
+
+          <Link
+            href={'/home/crear-obra'}
+            className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded flex items-center justify-center"
+          >
             + Nueva Obra
-          </button>
+          </Link>
         </div>
       </div>
     </div>
