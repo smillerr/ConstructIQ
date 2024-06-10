@@ -22,6 +22,11 @@ environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+from dotenv import load_dotenv
+load_dotenv()
+
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+
 AUTH_USER_MODEL = "user_management.Usuario"
 ACCOUNT_USERNAME_REQUIRED = False
 
@@ -127,7 +132,7 @@ DATABASES = {
 
 # Firebase configuration
 FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, 'iam_created.json')
+    os.path.join(BASE_DIR, 'firebase_credentials.json')
 )
 
 
@@ -167,6 +172,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
@@ -195,8 +201,8 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 firebase_admin.initialize_app(options={
-    'storageBucket': 'constructiq-f2a29.firebaseapp.com',
+    'storageBucket': 'constructiq-f2a29.appspot.com',
 })
 
 FIREBASE_BUCKET = storage.bucket()
-GOOGLE_APPLICATION_CREDENTIALS='iam_created.json'
+

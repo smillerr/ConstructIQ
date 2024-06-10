@@ -14,3 +14,4 @@ django-storages
 google-cloud-storage
 firebase-admin
 django-resumable
+python-dotenv

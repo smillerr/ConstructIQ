@@ -3,6 +3,11 @@
 import os
 import sys
 from django.contrib.auth import get_user_model
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 
 def create_superuser():
     User = get_user_model()
