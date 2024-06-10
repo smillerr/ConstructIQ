@@ -89,4 +89,3 @@ class ObraPersonal(models.Model):
             is_active=True
         )
     )
-
