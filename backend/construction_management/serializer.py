@@ -36,7 +36,7 @@ class ObraSerializer(serializers.ModelSerializer):
     class Meta:
         model=Obra
         #fields = '__all__'
-        fields = ['id', 'obra_personal', 'personal_info', 'id_capataces', 'id_director', 'nombre', 'descripcion', 'ubicacion', 'estado', 'activo', 'tipo_obra', 'fecha_inicio', 'fecha_final']
+        fields = ['id', 'obra_personal', 'personal_info', 'id_capataces', 'id_director', 'nombre', 'descripcion', 'ubicacion', 'estado', 'activo', 'tipo_obra', 'fecha_inicio', 'fecha_final', 'img_obra']
         extra_kwargs = {
             'personal_info': {'read_only': True},
         }

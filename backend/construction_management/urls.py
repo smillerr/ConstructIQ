@@ -11,10 +11,13 @@ router.register(r'obras-personal', views.ObraPersonalViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('image_upload', obra_image_view, name='image_upload'),
+    path('obra_upload', views.obra_image_view, name='obra_upload'),
     path('success', success, name='success'),
+    path('obra_images', views.display_obra_images, name = 'obra_images'),
 ]
 
 if settings.DEBUG:
+        urlpatterns += static(settings.STATIC_URL,
+                              document_root=settings.STATIC_ROOT)
         urlpatterns += static(settings.MEDIA_URL,
                               document_root=settings.MEDIA_ROOT)

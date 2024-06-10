@@ -38,5 +38,14 @@ def obra_image_view(request):
 
 def success(request):
     return HttpResponse('successfully uploaded')
+
+def display_obra_images(request):
+
+    if request.method == 'GET':
+
+        # getting all the objects of hotel.
+        Obras = Obra.objects.all()
+        return render(request, 'display_obra_images.html',
+                       {'obra_images': Obras})
 # Create your views here.
 
