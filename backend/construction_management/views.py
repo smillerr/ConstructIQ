@@ -41,7 +41,11 @@ def upload_obra(request, obra_id):
     # Initialize a client
     client = storage.Client()
     bucket = client.bucket('constructiq-f2a29.appspot.com') # Firebase/Google Cloud storage bucket
-    blob = bucket.blob(img_obra.name)
+
+    # subdirectory for obras 
+    subdirectory = 'obras_images/'
+    blob = bucket.blob(f"{subdirectory}{img_obra.name}")
+    #blob = bucket.blob(img_obra.name)
 
     blob.upload_from_file(img_obra, content_type=img_obra.content_type)
     obra.img_obra = blob.public_url  # Store the public URL in model Obra

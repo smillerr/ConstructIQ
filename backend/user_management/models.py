@@ -22,7 +22,7 @@ class Usuario(auth_models.AbstractUser):
     login = models.CharField(max_length=50, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
-    foto_perfil = models.BinaryField(null=True) 
+    foto_perfil = models.ImageField(upload_to='images/', null = True, blank = True)
     genero = models.CharField(max_length=10)
     direccion = models.CharField(max_length=100)
     celular = models.CharField(max_length=20)
