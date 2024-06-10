@@ -1,6 +1,6 @@
 from django.db import models
 from user_management.models import Usuario
-from django.db.models import Q
+from django.db.models import Q, JSONField
 from django.utils import timezone
 from datetime import timedelta
 # Create your models here.
@@ -9,7 +9,8 @@ class Obra(models.Model):
 
     nombre = models.CharField(max_length=50)
     descripcion = models.TextField(null=False,default='')
-    ubicacion = models.CharField(max_length=100)
+    #ubicacion = models.CharField(max_length=100)
+    ubicacion = JSONField(null=True, blank=True)
     ESTADOS_OBRA = (
         ('nueva', 'Nueva'),
         ('en desarrollo', 'En desarrollo'),
@@ -52,13 +53,10 @@ class Obra(models.Model):
         ('otros', 'Otros')
 )
     tipo_obra = models.CharField(max_length=25, choices= TIPO_OBRA, default='edificio') 
-
     fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
     fecha_final = models.DateField(default=timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
 
-
-
-
+    img_obra = models.ImageField(upload_to='images/', null = True, blank = True)
 
 
     def delete(self, *args, **kwargs):
@@ -73,7 +71,6 @@ class Obra(models.Model):
     @classmethod
     def obras_activas(cls):
         return cls.objects.filter(activo=True)
-
 
 
 class ObraPersonal(models.Model):
@@ -92,4 +89,3 @@ class ObraPersonal(models.Model):
             is_active=True
         )
     )
-
