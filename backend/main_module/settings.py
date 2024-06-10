@@ -9,10 +9,14 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from google.oauth2 import service_account
+import firebase_admin
+from firebase_admin import credentials, storage
 import os
 from pathlib import Path
 from datetime import timedelta
 import environ
+from google.oauth2 import service_account
 env = environ.Env()
 environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -121,6 +125,11 @@ DATABASES = {
     }
 }
 
+# Firebase configuration
+FIREBASE_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(BASE_DIR, 'iam_created.json')
+)
+
 
 
 # Password validation
@@ -158,6 +167,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -184,5 +194,9 @@ REST_FRAMEWORK = {
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+firebase_admin.initialize_app(options={
+    'storageBucket': 'constructiq-f2a29.firebaseapp.com',
+})
+
+FIREBASE_BUCKET = storage.bucket()
+GOOGLE_APPLICATION_CREDENTIALS='iam_created.json'

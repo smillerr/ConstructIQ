@@ -8,7 +8,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .forms import ObraForm
+from .forms import UploadObraForm
+from google.cloud import storage
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
@@ -52,31 +54,34 @@ def display_obra_images(request):
         return render(request, 'display_obra_images.html',
                        {'obra_images': Obras})
 
-
-logger = logging.getLogger(__name__)
+"""
+def upload_obra(request):
+    if request.method == 'POST':
+        form = UploadObraForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('upload_success')
+    else:
+        form = UploadObraForm()
+    return render(request, 'upload_obra.html', {'form': form})
+"""
 
 @api_view(['POST'])
-def upload_image(request, obra_id):
-    logger.debug(f"Request data: {request.data}")
-    logger.debug(f"Request files: {request.FILES}")
+def upload_obra(request, obra_id):
+    obra = get_object_or_404(Obra, pk=obra_id)
+    img_obra = request.FILES.get('img_obra')
 
-    try:
-        obra = Obra.objects.get(id=obra_id)
-    except Obra.DoesNotExist:
-        return Response({'error': 'Obra not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    if 'img_obra' not in request.FILES:
-        logger.debug("No image file provided")
+    if not img_obra:
         return Response({'error': 'No image file provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = request.data.copy()
-    data.update(request.FILES)
+    # Initialize a client
+    client = storage.Client()
+    bucket = client.bucket('constructiq-f2a29.firebaseapp.com')
+    blob = bucket.blob(img_obra.name)
 
-    serializer = ImgObraSerializer(obra, data=data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    else:
-        logger.debug(f"Serializer errors: {serializer.errors}")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    blob.upload_from_file(img_obra, content_type=img_obra.content_type)
+    obra.img_obra = blob.public_url  # Store the public URL in your model
+    obra.save()
 
+    serializer = ObraSerializer(obra)
+    return Response(serializer.data, status=status.HTTP_200_OK)

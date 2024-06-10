@@ -8,3 +8,9 @@ pandas
 setuptools
 coreapi
 Pillow
+pyrebase4
+django-environ
+django-storages 
+google-cloud-storage
+firebase-admin
+django-resumable
