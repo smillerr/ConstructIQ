@@ -1,4 +1,5 @@
 import { auth } from '../endpoints/authentication'
+import { constructions } from '../endpoints/constructions'
 import { users } from '../endpoints/users'
 import { getAccessToken, storeSessionAction } from './actions'
 
@@ -268,3 +269,46 @@ export const needsNewToken = (expiresAt) => {
 }
 
 export const libs = ['core', 'maps', 'places']
+
+export const getConstruction = async (id) => {
+  const url = constructions.getConstructionById(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const editConstruction = async (id, constructionData) => {
+  const url = constructions.updateConstruction(id)
+  const method = 'PATCH'
+  const body = JSON.stringify(constructionData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (_) {
+    const errorMessage =
+      'Hubo un error al editar la construccion, intente mas tarde'
+    console.error(errorMessage)
+  }
+}

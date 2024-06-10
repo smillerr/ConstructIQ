@@ -9,6 +9,7 @@ import AddStaffModal from './AddStaffModal'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import DeleteConstructionModal from './DeleteConstructionModal'
 import TasksSection from './TasksSection'
+import { editConstruction, getConstruction } from '@/lib/utils/utilFunctions'
 
 const ObraDetail = ({ obraId, userType }) => {
   const canDelete = userType === 'Gerente' || userType === 'Director de obra'
@@ -19,34 +20,23 @@ const ObraDetail = ({ obraId, userType }) => {
   const [peones, setPeones] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  const mockFetchObraDetails = async () => {
-    // Mock data
-    return {
-      id: obraId,
-      nombre: 'Colegio campestre',
-      estado: 'en progreso',
-      lat: 12.345,
-      lng: 67.89,
-      id_director: 'Director 1',
-      id_capataces: ['Capataz 1', 'Capataz 2'],
-      ayudantes: ['Ayudante 1', 'Ayudante 2', 'Ayudante 3'],
-      peones: ['Peon 1', 'Peon 2', 'Peon 3'],
-    }
-  }
-
-  const mockUpdateObraDetails = async (updateData) => {
-    console.log('Updating obra with data:', updateData)
-    // Simulate an API update call
-    return { success: true }
-  }
+  console.log('obra info', obra)
   const fetchObraDetails = async () => {
     try {
-      const data = await mockFetchObraDetails()
-      setObra(data)
-      setDirector(data.id_director)
-      setCapataces(data.id_capataces)
-      setAyudantes(data.ayudantes)
-      setPeones(data.peones)
+      const obraData = await getConstruction(obraId)
+      setObra(obraData)
+      setDirector(obraData.id_director)
+      setCapataces(obraData.id_capataces)
+      //Filter the staff by role
+      const ayudantes = obraData?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Ayudante de albañil',
+      )
+
+      setAyudantes(ayudantes)
+      const peones = obraData?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Peón',
+      )
+      setPeones(peones)
     } catch (error) {
       console.error('Error fetching obra details:', error)
     }
@@ -60,41 +50,58 @@ const ObraDetail = ({ obraId, userType }) => {
 
     switch (userType) {
       case 'capataces': {
-        const updatedCapataces = capataces.filter((user) => user !== userId)
-        setCapataces(updatedCapataces)
-        updatedData = { id_capataces: updatedCapataces }
+        const updatedCapataces = capataces.filter((user) => user.id !== userId)
+
+        updatedData = { id_capataces: updatedCapataces.map((user) => user.id) }
         break
       }
 
       case 'ayudantes': {
-        const updatedAyudantes = ayudantes.filter((user) => user !== userId)
-        setAyudantes(updatedAyudantes)
-        updatedData = { personal: [updatedAyudantes, ...peones] }
+        const updatedAyudantes = ayudantes.filter((user) => user.id !== userId)
+
+        updatedData = {
+          obra_personal: {
+            personal: [
+              ...updatedAyudantes.map((user) => user.id),
+              ...peones.map((user) => user.id),
+            ],
+          },
+        }
         break
       }
 
       case 'peones': {
-        const updatedPeones = peones.filter((user) => user !== userId)
-        setPeones(updatedPeones)
-        updatedData = { personal: [updatedPeones, ...ayudantes] }
+        const updatedPeones = peones.filter((user) => user.id !== userId)
+
+        updatedData = {
+          obra_personal: {
+            personal: [
+              ...updatedPeones.map((user) => user.id),
+              ...ayudantes.map((user) => user.id),
+            ],
+          },
+        }
         break
       }
 
       default:
         break
     }
-
     try {
-      const response = await mockUpdateObraDetails(updatedData)
-      if (response.success) {
-        // Re-fetch the obra details to trigger a re-render
-        const data = await mockFetchObraDetails()
-        setObra(data)
-        setDirector(data.id_director)
-        setCapataces(data.id_capataces)
-        setAyudantes(data.ayudantes)
-        setPeones(data.peones)
-      }
+      const editInfo = await editConstruction(obraId, updatedData)
+      setObra(editInfo)
+      setDirector(editInfo.id_director)
+      setCapataces(editInfo.id_capataces)
+      //Filter the staff by role
+      const ayudantes = editInfo?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Ayudante de albañil',
+      )
+
+      setAyudantes(ayudantes)
+      const peones = editInfo?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Peón',
+      )
+      setPeones(peones)
     } catch (error) {
       console.error('Error updating obra details:', error)
     }
@@ -103,31 +110,28 @@ const ObraDetail = ({ obraId, userType }) => {
     let updatedData = {}
     //Retrieve the personal prop from the formData
     const formDataPersonal = formData?.personal
-    //Filter the personal prop to get the ayudantes
-    const formDataAyudantes = formDataPersonal?.filter(
-      (user) => user.tipo_usuario === 'Ayudante de albañil',
-    )
-    //Filter the personal prop to get the peones
-    const formDataPeones = formDataPersonal?.filter(
-      (user) => user.tipo_usuario === 'Peón',
-    )
-
-    const updatedAyudantes = [...ayudantes, ...formDataAyudantes]
-    setAyudantes(updatedAyudantes)
-    const updatedPeones = [...peones, ...formDataPeones]
-    setPeones(updatedPeones)
-    updatedData = { personal: [...updatedAyudantes, ...updatedPeones] }
+    updatedData = {
+      personal: [
+        ...formDataPersonal,
+        ...peones.map((user) => user.id),
+        ...ayudantes.map((user) => user.id),
+      ],
+    }
     try {
-      const response = await mockUpdateObraDetails(updatedData)
-      if (response.success) {
-        // Re-fetch the obra details to trigger a re-render
-        const data = await mockFetchObraDetails()
-        setObra(data)
-        setDirector(data.id_director)
-        setCapataces(data.id_capataces)
-        setAyudantes(data.ayudantes)
-        setPeones(data.peones)
-      }
+      const editInfo = await editConstruction(obraId, updatedData)
+      setObra(editInfo)
+      setDirector(editInfo.id_director)
+      setCapataces(editInfo.id_capataces)
+      //Filter the staff by role
+      const ayudantes = editInfo?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Ayudante de albañil',
+      )
+
+      setAyudantes(ayudantes)
+      const peones = editInfo?.personal_info?.personal.filter(
+        (user) => user.tipo_usuario === 'Peón',
+      )
+      setPeones(peones)
     } catch (error) {
       console.error('Error updating obra details:', error)
     }
@@ -144,30 +148,29 @@ const ObraDetail = ({ obraId, userType }) => {
             alt="Puente peatonal"
             className="mr-4 h-72"
           />
-          <MapWidget />
+          <MapWidget
+            lat={JSON.parse(obra?.ubicacion)?.latitud}
+            lng={JSON.parse(obra?.ubicacion)?.longitud}
+          />
         </div>
-
         <h1 className="text-2xl font-bold text-blue-600">{obra.nombre}</h1>
-        <p className="text-gray-600">{obra.estado}</p>
+        <p className="text-gray-600">{obra.tipo_obra}</p>
 
         <div className="flex items-center mt-2">
           <button className="bg-orange-100 text-orange-600 text-sm px-2 py-1 rounded">
-            Estado <i className="fas fa-times" />
+            {obra.estado} <i className="fas fa-times" />
           </button>
         </div>
         <div className="flex items-center justify-between mt-4 mb-6">
           <p className="text-gray-600">Fecha de inicio</p>
-          <p className="text-gray-600">12 Apr 2024 08:31</p>
+          <p className="text-gray-600">{obra.fecha_inicio}</p>
         </div>
         <div className="flex items-center justify-between mt-4 mb-6">
           <p className="text-gray-600">Fecha de entrega</p>
-          <p className="text-gray-600">26 Apr 2024 08:31</p>
+          <p className="text-gray-600">{obra.fecha_final}</p>
         </div>
         <p className="mb-6 text-gray-800">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci
-          minima totam, ut in cupiditate ad eum dolore consectetur officiis
-          neque, optio sequi possimus numquam, veritatis quaerat natus
-          voluptates hic velit.
+          {obra.descripcion || 'No hay descripción disponible'}
         </p>
         <TasksSection />
         <div className="flex justify-end mt-6 space-x-2">
@@ -193,7 +196,7 @@ const ObraDetail = ({ obraId, userType }) => {
               Director
             </p>
             <ul id="director-list">
-              <li className="">{director}</li>
+              <li className="">{director.nombre}</li>
             </ul>
             <p className="text-gray-600 font-bold ">
               <span className="mr-2">
@@ -202,14 +205,16 @@ const ObraDetail = ({ obraId, userType }) => {
               Capataces
             </p>
             <ul id="capataces-list">
-              {capataces.map((capataz, index) => {
+              {capataces?.map((capataz, index) => {
                 return (
                   <li key={index} className="flex justify-between items-center">
-                    {capataz}
-                    {canDelete && (
+                    {capataz.nombre}
+                    {canDelete && capataces?.length > 1 && (
                       <button
                         className="text-red-600 text-sm px-2 py-1 rounded ml-2"
-                        onClick={() => handleUserDelete(capataz, 'capataces')}
+                        onClick={() =>
+                          handleUserDelete(capataz.id, 'capataces')
+                        }
                       >
                         Delete
                       </button>
@@ -225,14 +230,16 @@ const ObraDetail = ({ obraId, userType }) => {
               Ayudantes
             </p>
             <ul id="ayudantes-list">
-              {ayudantes.map((ayudante, index) => {
+              {ayudantes?.map((ayudante, index) => {
                 return (
                   <li key={index} className="flex justify-between items-center">
-                    {ayudante}
-                    {canDelete && (
+                    {ayudante.nombre}
+                    {canDelete && ayudantes?.length > 1 && (
                       <button
                         className="text-red-600 text-sm px-2 py-1 rounded ml-2"
-                        onClick={() => handleUserDelete(ayudante, 'ayudantes')}
+                        onClick={() =>
+                          handleUserDelete(ayudante.id, 'ayudantes')
+                        }
                       >
                         Delete
                       </button>
@@ -248,21 +255,28 @@ const ObraDetail = ({ obraId, userType }) => {
               Peones
             </p>
             <ul id="peones-list">
-              {peones.map((peon, index) => {
-                return (
-                  <li key={index} className="flex justify-between items-center">
-                    {peon}
-                    {canDelete && (
-                      <button
-                        className="text-red-600 text-sm px-2 py-1 rounded ml-2"
-                        onClick={() => handleUserDelete(peon, 'peones')}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </li>
-                )
-              })}
+              {peones?.length > 0 ? (
+                peones?.map((peon, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center"
+                    >
+                      {peon.nombre}
+                      {canDelete && peones?.length > 1 && (
+                        <button
+                          className="text-red-600 text-sm px-2 py-1 rounded ml-2"
+                          onClick={() => handleUserDelete(peon.id, 'peones')}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </li>
+                  )
+                })
+              ) : (
+                <li>No hay peones asignados</li>
+              )}
             </ul>
           </div>
         </div>

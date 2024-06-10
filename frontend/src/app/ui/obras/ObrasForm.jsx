@@ -1,7 +1,7 @@
 'use client'
 import { listUser, listUsersByRole } from '@/lib/utils/utilFunctions'
 import userSchema from '@/lib/Validators/create-user'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorMessage from '../common/Forms/ErrorMessage'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
@@ -21,6 +21,7 @@ export default function CreateUserForm() {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm({
     resolver: yupResolver(schema),
   })
@@ -69,8 +70,9 @@ export default function CreateUserForm() {
 
   const [selectedTrabajadores, setSelectedTrabajadores] = useState([])
 
-  const handleChangeTrabajadores = (event) => {
+  const handleChangeTrabajadores = (event, onChange) => {
     const value = event.target.value
+    onChange(value)
     setSelectedTrabajadores(value)
   }
 
@@ -88,32 +90,38 @@ export default function CreateUserForm() {
         >
           <FormControl sx={{ m: 1, width: 300 }}>
             <InputLabel id="trabajadores-label">Trabajadores</InputLabel>
-            <Select
-              labelId="trabajadores-label"
-              id="trabajadores-select"
-              multiple
-              value={selectedTrabajadores}
-              onChange={handleChangeTrabajadores}
-              input={<OutlinedInput label="Trabajadores" />}
-              renderValue={(selected) => (
-                <div>
-                  {selected
-                    .map((value) => {
-                      const trabajador = trabajadores.find(
-                        (t) => t.id === value,
-                      )
-                      return trabajador ? trabajador.nombre : ''
-                    })
-                    .join(', ')}
-                </div>
+            <Controller
+              control={control}
+              name="personal"
+              render={({ field: { onChange } }) => (
+                <Select
+                  labelId="trabajadores-label"
+                  id="trabajadores-select"
+                  multiple
+                  value={selectedTrabajadores}
+                  onChange={(e) => handleChangeTrabajadores(e, onChange)}
+                  input={<OutlinedInput label="Trabajadores" />}
+                  renderValue={(selected) => (
+                    <div>
+                      {selected
+                        .map((value) => {
+                          const trabajador = trabajadores.find(
+                            (t) => t.id === value,
+                          )
+                          return trabajador ? trabajador.nombre : ''
+                        })
+                        .join(', ')}
+                    </div>
+                  )}
+                >
+                  {trabajadores.map((trabajador) => (
+                    <MenuItem key={trabajador.id} value={trabajador.id}>
+                      {trabajador.nombre}
+                    </MenuItem>
+                  ))}
+                </Select>
               )}
-            >
-              {trabajadores.map((trabajador) => (
-                <MenuItem key={trabajador.id} value={trabajador.id}>
-                  {trabajador.nombre}
-                </MenuItem>
-              ))}
-            </Select>
+            />
           </FormControl>
           <section className="w-full md:grid md:grid-cols-2 md:gap-4 flex flex-col items-center justify-center">
             <div className="w-full flex flex-col">

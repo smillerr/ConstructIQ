@@ -3,7 +3,7 @@
 import { Loader } from '@googlemaps/js-api-loader'
 import { useEffect, useRef } from 'react'
 
-const MapWidget = () => {
+const MapWidget = ({ lat, lng }) => {
   const mapRef = useRef(null)
   useEffect(() => {
     async function initMap() {
@@ -15,14 +15,14 @@ const MapWidget = () => {
       //Init a marker
       const { Marker } = await loader.importLibrary('marker')
       const position = {
-        lat: 6.244203,
-        lng: -75.581211,
+        lat,
+        lng,
       }
       //Map options
       const mapOptions = {
         center: position,
         zoom: 17,
-        mapId: 'CONSTRUCTIQ_MAP',
+        mapId: `construction-${lat}-${lng}`,
       }
       //Setup the map
       const map = new Map(mapRef.current, mapOptions)
