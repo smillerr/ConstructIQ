@@ -56,7 +56,7 @@ class Obra(models.Model):
     fecha_inicio = models.DateField(default=timezone.now, verbose_name="Fecha de inicio")
     fecha_final = models.DateField(default=timezone.now() + timedelta(days=6*30), verbose_name="Fecha final")
 
-    img_obra = models.ImageField(upload_to='images/', default = 'images/default.jpg')
+    img_obra = models.ImageField(upload_to='images/', null = True, blank = True)
 
 
     def delete(self, *args, **kwargs):

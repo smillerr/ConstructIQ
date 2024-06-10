@@ -101,3 +101,10 @@ class ObraSerializer(serializers.ModelSerializer):
             obra_personal.save()
 
         return instance
+
+
+class ImgObraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Obra
+        fields = ['img_obra']
+

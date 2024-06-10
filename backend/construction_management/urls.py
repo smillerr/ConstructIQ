@@ -3,7 +3,7 @@ from rest_framework import routers
 from construction_management import views
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import obra_image_view, success
+from .views import obra_image_view, success, upload_image
 
 router=routers.DefaultRouter()
 router.register(r'obras', views.ObraViewSet)
@@ -14,6 +14,7 @@ urlpatterns = [
     path('obra_upload', views.obra_image_view, name='obra_upload'),
     path('success', success, name='success'),
     path('obra_images', views.display_obra_images, name = 'obra_images'),
+    path('upload-image/<int:obra_id>/', upload_image, name='upload-image')
 ]
 
 if settings.DEBUG:
