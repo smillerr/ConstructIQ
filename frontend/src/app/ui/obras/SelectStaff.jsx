@@ -13,6 +13,7 @@ import { Controller } from 'react-hook-form'
 const SelectStaff = ({ control }) => {
   const [trabajadores, setTrabajadores] = useState([])
   const [selectedTrabajadores, setSelectedTrabajadores] = useState([])
+  const [loading, setLoading] = useState(true)
   const handleChangeTrabajadores = (event, onChange) => {
     const value = event.target.value
     onChange(value)
@@ -21,6 +22,7 @@ const SelectStaff = ({ control }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true)
         const allUsers = await listUser()
         const peonesData = await listUsersByRole(allUsers, 'Peón')
         const ayudantesAlbañilData = await listUsersByRole(
@@ -29,18 +31,22 @@ const SelectStaff = ({ control }) => {
         )
         const trabajadoresData = [...peonesData, ...ayudantesAlbañilData]
         setTrabajadores(trabajadoresData)
+        setLoading(false)
       } catch (error) {
         console.error('Error al obtener los datos:', error)
       }
     }
     fetchData()
   }, [])
+  if (loading) {
+    return <p>Cargando...</p>
+  }
   return (
     <FormControl sx={{ m: 1, width: 300 }}>
       <InputLabel id="trabajadores-label">Trabajadores</InputLabel>
       <Controller
         control={control}
-        name="trabajadores"
+        name="personal"
         render={({ field: { onChange } }) => (
           <Select
             labelId="trabajadores-label"

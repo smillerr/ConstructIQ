@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
+import { deleteConstruction } from '@/lib/utils/utilFunctions'
 
 const style = {
   position: 'absolute',
@@ -25,9 +26,11 @@ export default function DeleteConstructionModal({
 }) {
   const handleClose = () => setOpen(false)
   const handleContinuar = async () => {
+    await deleteConstruction(constructionId)
+    routingCallback('/home/obras')
     handleClose()
   }
-  console.log(constructionId, routingCallback)
+
   return (
     <div>
       <Modal

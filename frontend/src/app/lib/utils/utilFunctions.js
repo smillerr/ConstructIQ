@@ -312,3 +312,21 @@ export const editConstruction = async (id, constructionData) => {
     console.error(errorMessage)
   }
 }
+
+export const deleteConstruction = async (id) => {
+  const url = constructions.deleteConstruction(id)
+  const method = 'DELETE'
+  const access_token = await getAccessToken()
+  try {
+    await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}

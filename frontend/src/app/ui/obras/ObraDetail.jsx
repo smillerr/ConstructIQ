@@ -10,8 +10,11 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import DeleteConstructionModal from './DeleteConstructionModal'
 import TasksSection from './TasksSection'
 import { editConstruction, getConstruction } from '@/lib/utils/utilFunctions'
+import { badgeStatusColor } from '@/lib/utils/commonStyles'
+import { useRouter } from 'next/navigation'
 
 const ObraDetail = ({ obraId, userType }) => {
+  const router = useRouter()
   const canDelete = userType === 'Gerente' || userType === 'Director de obra'
   const [obra, setObra] = useState(null)
   const [director, setDirector] = useState(null)
@@ -20,7 +23,6 @@ const ObraDetail = ({ obraId, userType }) => {
   const [peones, setPeones] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
-  console.log('obra info', obra)
   const fetchObraDetails = async () => {
     try {
       const obraData = await getConstruction(obraId)
@@ -110,12 +112,15 @@ const ObraDetail = ({ obraId, userType }) => {
     let updatedData = {}
     //Retrieve the personal prop from the formData
     const formDataPersonal = formData?.personal
+    console.log('formData', formDataPersonal)
     updatedData = {
-      personal: [
-        ...formDataPersonal,
-        ...peones.map((user) => user.id),
-        ...ayudantes.map((user) => user.id),
-      ],
+      obra_personal: {
+        personal: [
+          ...formDataPersonal,
+          ...peones.map((user) => user.id),
+          ...ayudantes.map((user) => user.id),
+        ],
+      },
     }
     try {
       const editInfo = await editConstruction(obraId, updatedData)
@@ -157,8 +162,10 @@ const ObraDetail = ({ obraId, userType }) => {
         <p className="text-gray-600">{obra.tipo_obra}</p>
 
         <div className="flex items-center mt-2">
-          <button className="bg-orange-100 text-orange-600 text-sm px-2 py-1 rounded">
-            {obra.estado} <i className="fas fa-times" />
+          <button
+            className={`${badgeStatusColor(obra.estado)} text-sm px-2 py-1 rounded`}
+          >
+            {obra.estado}
           </button>
         </div>
         <div className="flex items-center justify-between mt-4 mb-6">
@@ -230,23 +237,30 @@ const ObraDetail = ({ obraId, userType }) => {
               Ayudantes
             </p>
             <ul id="ayudantes-list">
-              {ayudantes?.map((ayudante, index) => {
-                return (
-                  <li key={index} className="flex justify-between items-center">
-                    {ayudante.nombre}
-                    {canDelete && ayudantes?.length > 1 && (
-                      <button
-                        className="text-red-600 text-sm px-2 py-1 rounded ml-2"
-                        onClick={() =>
-                          handleUserDelete(ayudante.id, 'ayudantes')
-                        }
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </li>
-                )
-              })}
+              {ayudantes?.length > 0 ? (
+                ayudantes?.map((ayudante, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className="flex justify-between items-center"
+                    >
+                      {ayudante.nombre}
+                      {canDelete && ayudantes?.length > 1 && (
+                        <button
+                          className="text-red-600 text-sm px-2 py-1 rounded ml-2"
+                          onClick={() =>
+                            handleUserDelete(ayudante.id, 'ayudantes')
+                          }
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </li>
+                  )
+                })
+              ) : (
+                <li>No hay ayudantes asignados</li>
+              )}
             </ul>
             <p className="text-gray-600 font-bold ">
               <span className="mr-2">
@@ -302,7 +316,7 @@ const ObraDetail = ({ obraId, userType }) => {
             open={deleteModal}
             setOpen={setDeleteModal}
             constructionId={obraId}
-            routingCallback={() => console.log('router push')}
+            routingCallback={router.replace}
           />
         )}
       </div>
