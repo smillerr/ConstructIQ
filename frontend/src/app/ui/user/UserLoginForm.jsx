@@ -87,7 +87,7 @@ const UserLoginForm = () => {
       <div className="flex justify-center">
         <ReCAPTCHA
           className="mt-4"
-          sitekey="6LcdedEpAAAAAMmfUebA7z-fuutpfxPjbEgDheoT"
+          sitekey={process.env.NEXT_PUBLIC_CAPTCHA_KEY}
           onChange={(value) => setCaptchaValue(value)}
         />
       </div>
