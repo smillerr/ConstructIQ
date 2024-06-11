@@ -1,6 +1,4 @@
-import logging
-from rest_framework import status  
-from rest_framework import viewsets
+from rest_framework import viewsets, status  
 from .serializer import ObraSerializer, ObraPersonalSerializer, ImgObraSerializer
 from .models import Obra, ObraPersonal
 from rest_framework.permissions import IsAuthenticated  
