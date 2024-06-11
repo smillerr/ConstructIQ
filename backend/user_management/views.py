@@ -13,6 +13,9 @@ from django.http import HttpResponse
 from .forms import UploadUsuarioForm
 from google.cloud import storage
 from django.shortcuts import get_object_or_404
+from datetime import datetime
+
+
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -80,6 +83,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 def upload_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
     foto_perfil = request.FILES.get('foto_perfil')
+
+    current_date = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+
+    foto_perfil.name = f"{usuario_id}{current_date}"
+
 
     if not foto_perfil:
         return Response({'error': 'No image file provided'}, status=status.HTTP_400_BAD_REQUEST)
