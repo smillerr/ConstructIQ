@@ -142,6 +142,7 @@ const ObraDetail = ({ obraId, userType }) => {
     }
     setModalOpen(false)
   }
+  console.log('obra', obra?.ubicacion)
   if (!obra) return <div>Loading...</div>
 
   return (
@@ -154,8 +155,8 @@ const ObraDetail = ({ obraId, userType }) => {
             className="mr-4 h-72"
           />
           <MapWidget
-            lat={JSON.parse(obra?.ubicacion)?.latitud}
-            lng={JSON.parse(obra?.ubicacion)?.longitud}
+            lat={obra?.ubicacion?.latitud}
+            lng={obra?.ubicacion?.longitud}
           />
         </div>
         <h1 className="text-2xl font-bold text-blue-600">{obra.nombre}</h1>
