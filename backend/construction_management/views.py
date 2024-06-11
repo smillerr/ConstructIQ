@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime
 
 
+
 # Create your views here.
 
 # Añadir decoradores para proteger acceso
@@ -36,9 +37,11 @@ def upload_obra(request, obra_id):
     obra = get_object_or_404(Obra, pk=obra_id)
     img_obra = request.FILES.get('img_obra')
 
+
     current_date = datetime.now().strftime('%S')
 
     img_obra.name = f"obra{obra_id}-{current_date}"
+
 
     if not img_obra:
         return Response({'error': 'No image file provided'}, status=status.HTTP_400_BAD_REQUEST)
