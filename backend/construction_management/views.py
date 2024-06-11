@@ -72,3 +72,5 @@ def upload_obra(request, obra_id):
 
     serializer = ImgObraSerializer(obra)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
