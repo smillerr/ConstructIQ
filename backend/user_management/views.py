@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from .serializer import UsuarioSerializer, UserInformationSerializer
+from .serializer import UsuarioSerializer, UserInformationSerializer, ImgUsuarioSerializer
 from .models import Usuario
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated  
@@ -8,8 +8,12 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import UserTypePermission
 from django.contrib.auth.hashers import make_password
-import logging
-logger = logging.getLogger("mylogger")
+from rest_framework.decorators import api_view
+from django.http import HttpResponse
+from .forms import UploadUsuarioForm
+from google.cloud import storage
+from django.shortcuts import get_object_or_404
+
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -72,3 +76,26 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+@api_view(['POST'])
+def upload_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+    foto_perfil = request.FILES.get('foto_perfil')
+
+    if not foto_perfil:
+        return Response({'error': 'No image file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Initialize a client
+    client = storage.Client()
+    bucket = client.bucket('constructiq-f2a29.appspot.com') # Firebase/Google Cloud storage bucket
+
+    # subdirectory for usuarios 
+    subdirectory = 'usuarios_images/'
+    blob = bucket.blob(f"{subdirectory}{foto_perfil.name}")
+    #blob = bucket.blob(foto_perfil.name)
+
+    blob.upload_from_file(foto_perfil, content_type=foto_perfil.content_type)
+    usuario.foto_perfil = blob.public_url  # Store the public URL in model usuario
+    usuario.save()
+
+    serializer = ImgUsuarioSerializer(usuario)
+    return Response(serializer.data, status=status.HTTP_200_OK)

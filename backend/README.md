@@ -1,3 +1,19 @@
+* Correr otra vez esto: 
+	 ```pip install -r requirements.txt```
+
+
+* Crear archivo firebase_credentials.json en directorio backend y agregarle esto: 
+
+
+* Exportar variable de entorno con credenciales de google: 
+	* Windows:
+	```$Env:GOOGLE_APPLICATION_CREDENTIALS="dirección "```
+	* Linux:
+	```export GOOGLE_APPLICATION_CREDENTIALS='firebase_credentials.json'```
+
+* Correr server
+
+
 # Backend Setup
 
 This guide will walk you through the steps to set up the backend for ConstructIQ.
