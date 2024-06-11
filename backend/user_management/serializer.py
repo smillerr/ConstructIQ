@@ -11,7 +11,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
         }
 
 class UserInformationSerializer(serializers.ModelSerializer):
-    foto_perfil = serializers.URLField(read_only=True)
     class Meta:
         model = Usuario
         fields = ['id', 'login', 'nombre', 'apellido', 'tipo_usuario', 'email'] # You can add as much as additional Usuario fields needed 
