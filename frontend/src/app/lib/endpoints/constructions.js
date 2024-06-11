@@ -7,4 +7,5 @@ export const constructions = {
   createConstruction: `${baseUrl}/obras/`,
   updateConstruction: (id) => `${baseUrl}/obras/${id}/`,
   deleteConstruction: (id) => `${baseUrl}/obras/${id}/`,
+  uploadImage: (id) => `${baseUrl}/upload-obra/${id}/`,
 }

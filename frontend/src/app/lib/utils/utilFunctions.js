@@ -330,3 +330,51 @@ export const deleteConstruction = async (id) => {
   }
   return
 }
+
+export const createConstruction = async (obraData) => {
+  const url = constructions.createConstruction
+  const method = 'POST'
+  const body = JSON.stringify(obraData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const uploadConstructionImage = async (id, image) => {
+  const url = constructions.uploadImage(id)
+  const method = 'POST'
+  const formData = new FormData()
+  formData.append('img_obra', image)
+  formData.get('img_obra')
+
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: formData,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
