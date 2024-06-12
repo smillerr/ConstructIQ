@@ -77,7 +77,8 @@ INSTALLED_APPS = [
     'coreapi',
     'corsheaders',
     'user_management',
-    'construction_management'
+    'construction_management',
+    'gestion_tareas'
 ]
 
 CORS_ALLOWED_ORIGINS = [
