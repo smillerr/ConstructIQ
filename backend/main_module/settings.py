@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 from google.oauth2 import service_account
 import firebase_admin
 from firebase_admin import credentials, storage
@@ -176,8 +177,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+#STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -205,7 +213,7 @@ MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 firebase_admin.initialize_app(options={
-    'storageBucket': 'constructiq-f2a29.appspot.com',
+    'storageBucket': 'constructiq-f2a29.appspot.com'
 })
 
 FIREBASE_BUCKET = storage.bucket()
