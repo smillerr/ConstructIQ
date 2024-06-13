@@ -405,3 +405,20 @@ export const uploadUserProfilePic = async (id, image) => {
   }
   return
 }
+
+export const construcionUrlResolver = (tipoUsuario, id) => {
+  let url = ''
+  switch (tipoUsuario) {
+    case 'Gerente':
+      url = `http://localhost:8000/api/v1/obras/`
+      break
+    case 'Director de obra':
+      url = `http://localhost:8000/api/v1/obras/?director=${id}`
+      break
+    case 'Capataz de obra':
+      url = `http://localhost:8000/api/v1/obras/?capataz=${id}`
+      break
+    default:
+  }
+  return url
+}
