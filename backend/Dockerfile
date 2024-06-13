@@ -1,11 +1,13 @@
 FROM python:3.11.9-alpine3.19
 
-RUN apk update && apk add libpq-dev nginx curl
+RUN apk update && apk add libpq-dev nginx curl g++ libffi-dev
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
 ENV DJANGO_DB_NAME="constructiq"
 ENV DJANGO_DB_USER="constructiq_owner"
+ENV GOOGLE_APPLICATION_CREDENTIALS="./firebase_credentials.json"
+
 
 ENV DJANGO_DB_PORT="5432"
 ENV DEBUG="True"

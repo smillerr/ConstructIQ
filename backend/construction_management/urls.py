@@ -15,7 +15,6 @@ urlpatterns = [
     path('', include(router.urls)),
     #path('firabase', views.upload_obra, name='upload'),
     path('upload-obra/<int:obra_id>/', views.upload_obra, name='upload-obra')
-
 ]
 
 if settings.DEBUG:
