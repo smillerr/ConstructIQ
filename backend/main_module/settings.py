@@ -17,13 +17,13 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 from google.oauth2 import service_account
-env = environ.Env()
-environ.Env.read_env()
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-from dotenv import load_dotenv
+env = environ.Env()
+environ.Env.read_env()
 load_dotenv()
 
 GOOGLE_APPLICATION_CREDENTIALS = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')

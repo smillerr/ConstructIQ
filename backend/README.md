@@ -2,14 +2,14 @@
 	 ```pip install -r requirements.txt```
 
 
-* Crear archivo firebase_credentials.json en directorio backend y agregarle esto: 
+* Crear archivo firebase_credentials.json en directorio backend y agregarle las credenciales 
+**NOTA:** Si no tienes las credenciales, pidelas en el grupo
 
 
 * Exportar variable de entorno con credenciales de google: 
-	* Windows:
-	```$Env:GOOGLE_APPLICATION_CREDENTIALS="dirección "```
-	* Linux:
-	```export GOOGLE_APPLICATION_CREDENTIALS='firebase_credentials.json'```
+    
+    * Agregar en el archivo .env en el directorio de backend la siguiente linea:
+    ``` GOOGLE_APPLICATION_CREDENTIALS=firebase_credentials.json ```  
 
 * Correr server
 
