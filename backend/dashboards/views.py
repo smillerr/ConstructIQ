@@ -20,7 +20,7 @@ class ObrasCompletarMasRapidoView(APIView):
     def get(self, request):
         obras = Obra.objects.filter(activo=True).annotate(
             tiempo_restante=ExpressionWrapper(F('fecha_final') - F('fecha_inicio'), output_field=fields.DurationField())
-        ).order_by('tiempo_restante')[:10]  # Las 10 obras que se deben completar más rápido
+        ).order_by('tiempo_restante')[:10] 
         data = [{'nombre': obra.nombre, 'tiempo_restante': obra.tiempo_restante} for obra in obras]
         return Response(data)
 
@@ -30,7 +30,7 @@ class ObrasMayorRetrasoView(APIView):
     def get(self, request):
         obras = Obra.objects.filter(activo=True).annotate(
             retraso=ExpressionWrapper(F('fecha_final') - F('fecha_inicio'), output_field=fields.DurationField())
-        ).order_by('-retraso')[:10]  # Las 10 obras con mayor retraso
+        ).order_by('-retraso')[:10]  
         data = [{'nombre': obra.nombre, 'retraso': obra.retraso} for obra in obras]
         return Response(data)
 
@@ -40,6 +40,6 @@ class ObrasMayorCantidadPersonalView(APIView):
     def get(self, request):
         obras = Obra.objects.filter(activo=True).annotate(
             num_personal=Count('obrapersonal')
-        ).order_by('-num_personal')[:10]  # Las 10 obras con mayor cantidad de personal
+        ).order_by('-num_personal')[:10]  
         data = [{'nombre': obra.nombre, 'num_personal': obra.num_personal} for obra in obras]
         return Response(data)
