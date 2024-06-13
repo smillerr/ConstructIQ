@@ -12,6 +12,7 @@ import TasksSection from './TasksSection'
 import { editConstruction, getConstruction } from '@/lib/utils/utilFunctions'
 import { badgeStatusColor } from '@/lib/utils/commonStyles'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const ObraDetail = ({ obraId, userType }) => {
   const router = useRouter()
@@ -112,7 +113,6 @@ const ObraDetail = ({ obraId, userType }) => {
     let updatedData = {}
     //Retrieve the personal prop from the formData
     const formDataPersonal = formData?.personal
-    console.log('formData', formDataPersonal)
     updatedData = {
       obra_personal: {
         personal: [
@@ -142,8 +142,8 @@ const ObraDetail = ({ obraId, userType }) => {
     }
     setModalOpen(false)
   }
-  console.log('obra', obra?.ubicacion)
-  if (!obra) return <div>Loading...</div>
+  if (!obra)
+    return <div className="mx-4">Cargando informacion de la obra...</div>
 
   return (
     <div className="flex flex-col md:flex-row">
@@ -182,9 +182,12 @@ const ObraDetail = ({ obraId, userType }) => {
         </p>
         <TasksSection />
         <div className="flex justify-end mt-6 space-x-2">
-          <button className="bg-gray-200 text-black text-sm px-2 py-1 rounded">
+          <Link
+            href={`/home/obras/${obraId}/editar`}
+            className="bg-gray-200 text-black text-sm px-2 py-1 rounded"
+          >
             <PencilIcon className="h-5 w-5" />
-          </button>
+          </Link>
           <button
             className="bg-red-600 hover:bg-red-700 text-white text-sm px-2 py-1 rounded"
             onClick={() => setDeleteModal(true)}
@@ -204,7 +207,7 @@ const ObraDetail = ({ obraId, userType }) => {
               Director
             </p>
             <ul id="director-list">
-              <li className="">{director.nombre}</li>
+              <li className="">{director?.nombre}</li>
             </ul>
             <p className="text-gray-600 font-bold ">
               <span className="mr-2">
