@@ -32,6 +32,15 @@ const userSchema = yup
       .string()
       .required(requiredField)
       .max(100, maxCharacters(100)),
+    foto_perfil: yup
+      .mixed()
+      .required(requiredField)
+      .test('fileSize', 'El archivo es muy grande', (value) => {
+        return value && value[0]?.size <= 5000000
+      })
+      .test('fileType', 'El archivo no es una imagen', (value) => {
+        return value && value[0]?.type.includes('image')
+      }),
   })
   .required()
 
