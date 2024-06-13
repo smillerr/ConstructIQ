@@ -29,6 +29,8 @@ const TasksSection = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-gray-600 font-bold ">Tasks</h2>
         <button className="bg-green-100 text-green-600 text-sm px-2 py-1 rounded ">
+          <link href={'/home/crear-tarea'} />
+
           <PlusIcon className="h-5 w-5" />
         </button>
       </div>
