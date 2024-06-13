@@ -7,8 +7,14 @@ from rest_framework.response import Response
 from user_management.serializer import UsuarioSerializerSimply
 from django_filters import rest_framework as filters
 from .filters import TareaFilter
+from .permissions import permissions
+from .permissions import UserTypePermission
+from rest_framework.permissions import IsAuthenticated  
+
+
 
 class TareaViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, UserTypePermission] 
     queryset = Tarea.objects.all()
     serializer_class = TareaSerializer
     filter_backends = (filters.DjangoFilterBackend,)
