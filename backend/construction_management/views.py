@@ -10,6 +10,8 @@ from .forms import UploadObraForm
 from google.cloud import storage
 from django.shortcuts import get_object_or_404
 from datetime import datetime
+from rest_framework.views import APIView
+from .permissions import UserTypePermission
 
 
 
@@ -17,13 +19,21 @@ from datetime import datetime
 
 # Añadir decoradores para proteger acceso
 
-
 class ObraViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-
-    queryset = Obra.objects.all()
+    permission_classes = [IsAuthenticated, UserTypePermission]
     serializer_class = ObraSerializer
+    queryset = Obra.objects.all()
+    def get_queryset(self):
+        queryset = Obra.objects.all()
+        director = self.request.query_params.get('director', None)
+        capataz = self.request.query_params.get('capataz', None)
 
+        if director:
+            queryset = queryset.filter(id_director__id=director)
+        if capataz:
+            queryset = queryset.filter(id_capataces__id=capataz)
+
+        return queryset
 
 class ObraPersonalViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
