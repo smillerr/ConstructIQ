@@ -42,13 +42,18 @@ export const handleCreateUserForm = async (
   routingCallback,
   errorCallback,
 ) => {
+  const foto_perfil = data.foto_perfil[0]
   if (data?.foto_perfil?.length === 0) {
     delete data.foto_perfil
   }
   if (data?.login === 'N/A') {
     delete data.login
   }
-  await createUser(data, routingCallback, errorCallback)
+  const createdUser = await createUser(data, errorCallback)
+  if (createdUser) {
+    await uploadUserProfilePic(createdUser.id, foto_perfil)
+    routingCallback('/home/usuarios')
+  }
 }
 // * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
 export const generateRandomString = () => {
@@ -107,7 +112,7 @@ export const handleUserLogin = async (
     errorCallback(errorMessage)
   }
 }
-export const createUser = async (userData, routingCallback, errorCallback) => {
+export const createUser = async (userData, errorCallback) => {
   const url = users.createUser
   const method = 'POST'
   const body = new URLSearchParams(userData)
@@ -128,7 +133,6 @@ export const createUser = async (userData, routingCallback, errorCallback) => {
     }
     if (res.ok) {
       errorCallback('')
-      routingCallback('/home/usuarios')
       return await res.json()
     }
   } catch (_) {
@@ -361,6 +365,29 @@ export const uploadConstructionImage = async (id, image) => {
   formData.append('img_obra', image)
   formData.get('img_obra')
 
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: formData,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const uploadUserProfilePic = async (id, image) => {
+  const url = users.uploadImage(id)
+  const method = 'POST'
+  const formData = new FormData()
+  formData.append('foto_perfil', image)
   const access_token = await getAccessToken()
   try {
     const res = await fetch(url, {

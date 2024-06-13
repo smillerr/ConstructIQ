@@ -6,5 +6,6 @@ export const users = {
   createUser: `${baseUrl}/usuarios/`,
   updateUser: (id) => `${baseUrl}/usuarios/${id}/`,
   deleteUser: (id) => `${baseUrl}/usuarios/${id}/`,
+  uploadImage: (id) => `${baseUrl}/upload-usuario/${id}/`,
   authUser: `http://127.0.0.1:8000/api/login/`,
 }
