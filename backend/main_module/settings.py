@@ -78,11 +78,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'user_management',
     'construction_management',
-    'gestion_tareas'
+    'gestion_tareas',
+    'django_filters'
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',  # Add your frontend URL here
+    'http://localhost:3000',  
 ]
 
 MIDDLEWARE = [
