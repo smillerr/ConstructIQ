@@ -7,7 +7,7 @@ import {
   directorHasAccess,
   foremanHasAccess,
 } from './authorization/constructions/permissions'
-
+import { foremanHasTaskAccess } from './authorization/tasks/permissions'
 export const fetchData = async (
   url,
   method = 'GET',
@@ -476,6 +476,25 @@ export const getTasksByConstruction = async (id) => {
   }
 }
 
+export const getTasksByForeman = async (id) => {
+  const url = tasks.getTaskByForeman(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const hasConstructionAccess = async (userType, userId, obraId) => {
   console.log(userType, userId, obraId)
   switch (userType) {
@@ -485,6 +504,19 @@ export const hasConstructionAccess = async (userType, userId, obraId) => {
       return await directorHasAccess(userId, obraId)
     case 'Capataz de obra':
       return await foremanHasAccess(userId, obraId)
+    default:
+      return false
+  }
+}
+
+export const hasTaskAccess = async (userType, userId, taskId) => {
+  switch (userType) {
+    case 'Gerente':
+      return true
+    case 'Director de obra':
+      return true
+    case 'Capataz de obra':
+      return await foremanHasTaskAccess(userId, taskId)
     default:
       return false
   }
