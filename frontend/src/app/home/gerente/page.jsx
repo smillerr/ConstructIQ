@@ -1,4 +1,4 @@
-import DashboardOvervIew from '@/ui/dashboard/dashboardOverviewGerente'
+import DashboardOvervIew from '@/ui/dashboard/dashboardOverviewGerentee'
 import { getSession } from '@/lib/utils/auth'
 import { redirect } from 'next/navigation'
 
