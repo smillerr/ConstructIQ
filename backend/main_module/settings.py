@@ -81,7 +81,8 @@ INSTALLED_APPS = [
     'user_management',
     'construction_management',
     'gestion_tareas',
-    'task_advancements',
+    'avances',
+    #'task_advancements',
     'django_filters'
 ]
 
@@ -218,3 +219,4 @@ firebase_admin.initialize_app(options={
 })
 
 FIREBASE_BUCKET = storage.bucket()
+GS_BUCKET_NAME= 'constructiq-f2a29'

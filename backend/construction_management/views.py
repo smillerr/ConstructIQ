@@ -48,7 +48,7 @@ def upload_obra(request, obra_id):
     img_obra = request.FILES.get('img_obra')
 
 
-    current_date = datetime.now().strftime('%S')
+    current_date = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
     img_obra.name = f"obra{obra_id}-{current_date}"
 

@@ -4,10 +4,10 @@ from django.db.models import Q, JSONField
 from django.utils import timezone
 from datetime import timedelta
 
-class Avances(models.Model):
+class Advancements(models.Model):
 
     #id_task = models.OneToOneField(Tarea, on_delete=models.CASCADE) 
-    #id_task = models.ForeignKey(Tarea, on_delete=models.CASCADE)  # Changed to ForeignKey
+    id_task = models.ForeignKey(Tarea, on_delete=models.CASCADE, related_name='tarea_in_advancements', default=1)  # Changed to ForeignKey
     descripcion = models.TextField(null=False,default='')
     #nota_voz = models.FileField(upload_to="records")
     img_avance = models.ImageField(upload_to='images/', null = True, blank = True)

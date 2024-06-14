@@ -1,5 +1,5 @@
 from rest_framework import routers
-from task_advancements import views
+from avances import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path,include
@@ -11,7 +11,8 @@ router=routers.DefaultRouter()
 router.register(r'avances', views.AvancesViewSet)
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('upload-avance/<int:advancement_id>/', views.upload_advancement, name='upload-avance')
 ]
 
 if settings.DEBUG:

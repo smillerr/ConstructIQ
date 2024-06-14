@@ -29,7 +29,7 @@ urlpatterns = [
     path('api/v1/', include('user_management.urls')), 
     path('api/v1/', include('construction_management.urls')), 
     path('api/v1/', include('gestion_tareas.urls')),
-    path('api/v1/', include('task_advancements.urls')),
+    path('api/v1/', include('avances.urls')),
     path('docs/', include_docs_urls(title='Api Documentation')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
