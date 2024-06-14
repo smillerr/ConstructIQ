@@ -12,7 +12,6 @@ export default async function TaskPage(props) {
   if (!permission) {
     redirect(`/home/obras/${props.searchParams.cid}`)
   }
-  console.log(session)
   return (
     <>
       <div className="p-4 flex justify-between">
