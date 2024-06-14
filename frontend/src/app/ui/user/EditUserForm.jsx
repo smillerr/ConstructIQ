@@ -84,7 +84,6 @@ const EditUserForm = ({ userId }) => {
                 <input
                   id="dropzone-file"
                   type="file"
-                  className="hidden"
                   {...register('foto_perfil')}
                 />
               </label>

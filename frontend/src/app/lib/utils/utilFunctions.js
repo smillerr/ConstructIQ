@@ -56,16 +56,6 @@ export const handleCreateUserForm = async (
     routingCallback('/home/usuarios')
   }
 }
-// * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
-export const generateRandomString = () => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
-}
 
 export const handleEditUserForm = async (
   data,
@@ -83,7 +73,12 @@ export const handleEditUserForm = async (
     delete data.login
   }
 
-  await editUser(data, routingCallback, errorCallback)
+  const editedUser = await editUser(data, errorCallback)
+  if (editedUser) {
+    if (data?.foto_perfil[0])
+      await uploadUserProfilePic(editedUser.id, data.foto_perfil[0])
+    routingCallback('/home/usuarios')
+  }
 }
 export const handleUserLogin = async (
   formData,
@@ -209,7 +204,7 @@ export const getUser = async (id) => {
   }
 }
 
-export const editUser = async (userData, routingCallback, errorCallback) => {
+export const editUser = async (userData, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PATCH'
   const body = new URLSearchParams(userData)
@@ -225,7 +220,6 @@ export const editUser = async (userData, routingCallback, errorCallback) => {
     })
     if (res.ok) {
       errorCallback('')
-      routingCallback('/home/usuarios')
       return await res.json()
     }
   } catch (_) {
