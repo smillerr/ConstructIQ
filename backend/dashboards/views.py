@@ -94,3 +94,14 @@ class ObrasMenorCantidadTareasFinalizadasView(APIView):
         ).order_by('num_tareas_finalizadas')[:10]
         data = [{'nombre': obra.nombre, 'num_tareas_finalizadas': obra.num_tareas_finalizadas} for obra in obras]
         return Response(data)
+
+
+class ObrasMayorCantidadTareasView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        obras = Obra.objects.annotate(
+            num_tareas=Count('tareas')
+        ).order_by('-num_tareas')[:10]
+        data = [{'nombre': obra.nombre, 'num_tareas': obra.num_tareas} for obra in obras]
+        return Response(data)

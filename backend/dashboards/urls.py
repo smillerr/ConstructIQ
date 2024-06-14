@@ -6,6 +6,7 @@ from .views import NumeroObrasPorTipoView
 from .views import UsuariosRolPorObra
 from .views import ObrasMayorCantidadTareasFinalizadasView
 from .views import ObrasMenorCantidadTareasFinalizadasView
+from .views import ObrasMayorCantidadTareasView
 
 
 router = routers.DefaultRouter()
@@ -21,6 +22,7 @@ urlpatterns = [
     path('usuarios-rol-por-obra/', UsuariosRolPorObra.as_view(),  name='usuarios-rol-por-obra'),
     path('usuarios-rol-por-obra/', UsuariosRolPorObra.as_view(),  name='usuarios-rol-por-obra'),
     path('obras-mayor-cantidad-tareas-finalizadas/', ObrasMayorCantidadTareasFinalizadasView.as_view(), name='obras-mayor-cantidad-tareas-finalizadas'),
-    path('obras-menor-cantidad-tareas-finalizadas/', ObrasMenorCantidadTareasFinalizadasView.as_view(), name='obras-menor-cantidad-tareas-finalizadas')
+    path('obras-menor-cantidad-tareas-finalizadas/', ObrasMenorCantidadTareasFinalizadasView.as_view(), name='obras-menor-cantidad-tareas-finalizadas'),
+    path('obras-mayor-cantidad-tareas/', ObrasMayorCantidadTareasView.as_view(), name='obras-mayor-cantidad-tareas')
 
 ]
