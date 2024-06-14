@@ -3,6 +3,7 @@ from .models import Obra, ObraPersonal
 from user_management.models import Usuario
 
 class UsuarioSerializer(serializers.ModelSerializer):
+    foto_perfil = serializers.URLField(read_only=True)
     class Meta:
         model = Usuario
         fields = ['id', 'tipo_usuario', 'nombre', 'foto_perfil']

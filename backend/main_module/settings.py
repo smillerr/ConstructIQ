@@ -36,7 +36,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)558&h8a%ziwc2hl6z2g0q7&#yjm4c7qg%$x&a$^8%)c2h_4^j'
+SECRET_KEY =  os.environ.get("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,7 +83,6 @@ INSTALLED_APPS = [
     'gestion_tareas',
     'task_advancements',
     'django_filters'
-
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -128,11 +127,11 @@ WSGI_APPLICATION = 'main_module.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "postgres",
-        'USER': "postgres.kppbgdmefhnkehajqjdc",
-        'PASSWORD': "Desarrollo2024",
-        'HOST': "aws-0-us-east-1.pooler.supabase.com",
-        'PORT': "5432",
+        'NAME': os.environ.get("DJANGO_DB_NAME"),
+        'USER': os.environ.get("DJANGO_DB_USER"),
+        'PASSWORD': os.environ.get("DJANGO_DB_PASSWORD"),
+        'HOST': os.environ.get("DJANGO_DB_HOST"),
+        'PORT':  os.environ.get("DJANGO_DB_PORT"),
     }
 }
 
@@ -219,4 +218,3 @@ firebase_admin.initialize_app(options={
 })
 
 FIREBASE_BUCKET = storage.bucket()
-
