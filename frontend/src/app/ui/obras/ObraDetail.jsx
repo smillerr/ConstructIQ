@@ -6,7 +6,7 @@ import HandymanIcon from '@mui/icons-material/Handyman'
 import CarpenterIcon from '@mui/icons-material/Carpenter'
 import PlumbingIcon from '@mui/icons-material/Plumbing'
 import AddStaffModal from './AddStaffModal'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import DeleteConstructionModal from './DeleteConstructionModal'
 import TasksSection from './TasksSection'
 import {
@@ -194,12 +194,31 @@ const ObraDetail = ({ obraId, userType }) => {
         <p className="mb-6 text-gray-800">
           {obra.descripcion || 'No hay descripción disponible'}
         </p>
-        {tareas?.length > 0 && (
+        {tareas?.length > 0 ? (
           <TasksSection
             taskList={tareas}
             relatedConstruction={obra.nombre}
             relatedId={obra.id}
           />
+        ) : (
+          <div className="flex justify-between items-center">
+            <h2 className="text-gray-600 font-bold ">
+              No hay tareas para esta obra
+            </h2>
+            <button className="bg-green-100 text-green-600 text-sm px-2 py-1 rounded ">
+              <Link
+                href={{
+                  pathname: '/home/crear-tarea',
+                  query: {
+                    cid: obraId,
+                    cname: obra.nombre,
+                  },
+                }}
+              >
+                <PlusIcon className="h-5 w-5" />
+              </Link>
+            </button>
+          </div>
         )}
         <div className="flex justify-end mt-6 space-x-2">
           <Link
