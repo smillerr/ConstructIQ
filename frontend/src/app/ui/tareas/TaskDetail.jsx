@@ -5,10 +5,15 @@ import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Avatar, AvatarGroup } from '@mui/material'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import DeleteTaskModal from './DeleteTaskModal'
+import { useRouter } from 'next/navigation'
 
-const TaskDetail = ({ taskId, constructionId, constructionName }) => {
+const TaskDetail = ({ taskId, constructionId, constructionName, userType }) => {
+  const router = useRouter()
   const [task, setTask] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [deleteModal, setDeleteModal] = useState(false)
+  const canDelete = userType === 'Director de obra'
   useEffect(() => {
     const fetchTask = async () => {
       const taskData = await getTask(taskId)
@@ -84,7 +89,11 @@ const TaskDetail = ({ taskId, constructionId, constructionName }) => {
             >
               <PencilIcon className="h-5 w-5" />
             </Link>
-            <button className="bg-red-600 hover:bg-red-700 text-white text-sm px-2 py-1 rounded">
+            <button
+              className="bg-red-600 hover:bg-red-700 text-white text-sm px-2 py-1 rounded"
+              onClick={() => setDeleteModal(true)}
+              disabled={!canDelete}
+            >
               <TrashIcon className="h-5 w-5" />
             </button>
           </div>
@@ -93,6 +102,15 @@ const TaskDetail = ({ taskId, constructionId, constructionName }) => {
         <div className="max-w-5xl mx-4 bg-white p-6 rounded shadow flex-1">
           <p className="font-bold">Cargando informacion de la tarea...</p>
         </div>
+      )}
+      {deleteModal && (
+        <DeleteTaskModal
+          open={deleteModal}
+          setOpen={setDeleteModal}
+          taskId={taskId}
+          relatedConstruction={constructionId}
+          routingCallback={router.replace}
+        />
       )}
     </div>
   )

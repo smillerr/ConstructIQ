@@ -21,6 +21,7 @@ export default async function TaskPage(props) {
         taskId={props.params.tareaId}
         constructionId={props.searchParams.cid}
         constructionName={props.searchParams.cname}
+        userType={session?.user?.tipo_usuario}
       />
     </>
   )

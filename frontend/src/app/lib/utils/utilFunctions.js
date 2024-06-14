@@ -603,3 +603,21 @@ export const getTask = async (id) => {
     console.error(error)
   }
 }
+
+export const deleteTask = async (id) => {
+  const url = tasks.deleteTask(id)
+  const method = 'DELETE'
+  const access_token = await getAccessToken()
+  try {
+    await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
