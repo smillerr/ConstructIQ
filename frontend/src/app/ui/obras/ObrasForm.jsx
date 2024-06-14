@@ -33,7 +33,6 @@ export default function CreateObrasForm() {
     resolver: yupResolver(schema),
   })
   const router = useRouter()
-
   const handleCreateObrasForm = async (data) => {
     const personal = data.personal
     const img_obra = data.img_obra[0]
@@ -369,7 +368,7 @@ export default function CreateObrasForm() {
                     d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
                   />
                 </svg>
-                <h2 className="mx-3 text-gray-400">Profile Photo</h2>
+                <h2 className="mx-3 text-gray-400">Photo</h2>
                 <input
                   id="dropzone-file"
                   type="file"
