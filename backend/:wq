@@ -78,12 +78,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'coreapi',
     'corsheaders',
+    'django_filters',
     'user_management',
     'construction_management',
-    'gestion_tareas',
-    'task_advancements',
-    'django_filters'
-
+    'gestion_tareas'
 ]
 
 CORS_ALLOWED_ORIGINS = [
