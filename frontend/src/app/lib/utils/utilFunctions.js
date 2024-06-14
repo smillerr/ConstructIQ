@@ -521,3 +521,35 @@ export const hasTaskAccess = async (userType, userId, taskId) => {
       return false
   }
 }
+
+export const createTask = async (taskData) => {
+  const url = tasks.createTask
+  const method = 'POST'
+  const body = JSON.stringify(taskData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const handleCreateTask = async (
+  taskData,
+  relatedConstruction,
+  routingCallback,
+) => {
+  await createTask(taskData)
+  routingCallback(`/home/obras/${relatedConstruction}`)
+}

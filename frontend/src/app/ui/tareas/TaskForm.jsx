@@ -2,9 +2,13 @@
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ErrorMessage from '../common/Forms/ErrorMessage'
-//import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { errorInputClasses } from '@/lib/utils/commonStyles'
-import { listUser, listUsersByRole } from '@/lib/utils/utilFunctions'
+import {
+  handleCreateTask,
+  listUser,
+  listUsersByRole,
+} from '@/lib/utils/utilFunctions'
 import React, { useEffect, useState } from 'react'
 
 import {
@@ -16,18 +20,19 @@ import {
 } from '@mui/material'
 import createTasksSchema from '@/lib/Validators/create-tasks'
 
-const TaskForm = () => {
+const TaskForm = ({ relatedId, relatedName }) => {
   const schema = createTasksSchema
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     control,
   } = useForm({
     resolver: yupResolver(schema),
   })
 
-  //const router = useRouter()
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [capataces, setCapataces] = useState([])
   const [trabajadores, setTrabajadores] = useState([])
@@ -53,6 +58,7 @@ const TaskForm = () => {
       } catch (error) {
         console.error('Error al obtener los datos:', error)
       }
+      setValue('obra', parseInt(relatedId))
     }
 
     fetchData()
@@ -73,7 +79,7 @@ const TaskForm = () => {
           className="h-full"
           onSubmit={handleSubmit(
             (data) => {
-              console.log(data)
+              handleCreateTask(data, relatedId, router.push)
             },
             (err) => console.log(err),
           )}
@@ -162,8 +168,9 @@ const TaskForm = () => {
                 htmlFor="obra"
                 className="text-gray-700 font-semibold mb-2"
               >
-                Obra
+                Obra relacionada
               </label>
+              <p>{relatedName}</p>
             </div>
 
             <div className="w-full flex flex-col justify-center mt-4 md:mt-0">
@@ -173,7 +180,7 @@ const TaskForm = () => {
                 ) : (
                   <div>
                     <select
-                      {...register('id_capataz')}
+                      {...register('capataz_encargado')}
                       className={`block w-full py-3 text-gray-700 bg-white border rounded-lg px-4 ${errors.id_capataz?.message ? errorInputClasses : `focus:border-blue-400 focus:ring-blue-300`} focus:outline-none focus:ring focus:ring-opacity-40`}
                     >
                       <option value="">Seleccione un capataz</option>
@@ -193,7 +200,7 @@ const TaskForm = () => {
               <InputLabel id="trabajadores-label">Trabajadores</InputLabel>
               <Controller
                 control={control}
-                name="personal"
+                name="personal_asignado"
                 render={({ field: { onChange } }) => (
                   <Select
                     labelId="trabajadores-label"

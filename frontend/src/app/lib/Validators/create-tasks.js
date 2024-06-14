@@ -11,11 +11,11 @@ const createTasksSchema = yup.object().shape({
   tipo_tarea: yup.string().required('El tipo de tarea es obligatorio'),
   descripcion: yup.string().required('La descripción es obligatoria'),
 
-  id_capataz: yup.number().required('El ID del capataz es obligatorio'),
+  capataz_encargado: yup.number().required('Debe seleccionar un capataz'),
   personal_asignado: yup
     .array()
     .of(yup.number().positive('Los IDs del personal deben ser positivos'))
-    .min(1, 'Debe asignar al menos un personal'),
+    .min(1, 'Debe asignar al menos un trabajador'),
 })
 
 export default createTasksSchema
