@@ -38,6 +38,8 @@ const formatTime = (seconds) => {
   }
 }
 
+//Graficos Gerente
+
 export const LineGraph = () => {
   const [chartData, setChartData] = useState([])
 
@@ -71,6 +73,71 @@ export const LineGraph = () => {
   }
 
   return <Line data={lineData} options={{ maintainAspectRatio: false }} />
+}
+
+export const HorizontalBarGraph = () => {
+  const [chartData, setChartData] = useState([])
+
+  useEffect(() => {
+    fetchData(`http://localhost:8000/dashboards/user-role-stats/`)
+      .then((data) => {
+        console.log('HorizontalBarGraph data:', data)
+        setChartData(data)
+      })
+      .catch((error) => {
+        console.error('Error fetching HorizontalBarGraph data:', error)
+      })
+  }, [])
+
+  const horizontalBarData = {
+    labels: chartData.map((item) => item.tipo_usuario || ''),
+    datasets: [
+      {
+        label: 'Cantidad de Usuario',
+        data: chartData.map((item) => item.count),
+        backgroundColor: 'rgb(224, 155, 100)',
+        borderColor: '#040802',
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  const options = {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+  }
+
+  return <Bar data={horizontalBarData} options={options} />
+}
+
+export const BarGraph = () => {
+  const [chartData, setChartData] = useState([])
+
+  useEffect(() => {
+    fetchData(`http://localhost:8000/dashboards/obras-mayor-retraso/`)
+      .then((data) => {
+        console.log('BarGraph data:', data)
+        setChartData(data)
+      })
+      .catch((error) => {
+        console.error('Error fetching BarGraph data:', error)
+      })
+  }, [])
+
+  const barData = {
+    labels: chartData.map((item) => item.nombre || ''),
+    datasets: [
+      {
+        label: 'Días de Retraso',
+        data: chartData.map((item) => formatTime(item.retraso)),
+        backgroundColor: 'rgb(4, 200, 2)',
+        borderColor: '#60A5FA',
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  return <Bar data={barData} options={{ maintainAspectRatio: false }} />
 }
 
 export const PieGraph = () => {
@@ -152,41 +219,47 @@ export const PieGraph = () => {
   return <Pie data={pieData} options={options} />
 }
 
-export const BarGraph = () => {
+//Gaficos Director
+
+export const LineGraphh = () => {
   const [chartData, setChartData] = useState([])
 
   useEffect(() => {
-    fetchData(`http://localhost:8000/dashboards/obras-mayor-retraso/`)
+    fetchData(`http://localhost:8000/dashboards/numero-obras-por-tipo/
+`)
       .then((data) => {
-        console.log('BarGraph data:', data)
+        console.log('LineGraph data:', data)
+        if (data.length === 0) {
+          console.log('El array de datos está vacío')
+        }
         setChartData(data)
       })
       .catch((error) => {
-        console.error('Error fetching BarGraph data:', error)
+        console.error('Error fetching LineGraph data:', error)
       })
   }, [])
 
-  const barData = {
-    labels: chartData.map((item) => item.nombre || ''),
+  const lineData = {
+    labels: chartData.map((item) => item.tipo_obra || ''),
     datasets: [
       {
-        label: 'Días de Retraso',
-        data: chartData.map((item) => formatTime(item.retraso)),
-        backgroundColor: 'rgb(4, 200, 2)',
-        borderColor: '#60A5FA',
-        borderWidth: 1,
+        label: 'Obras por Tipo',
+        data: chartData.map((item) => item.count),
+        backgroundColor: 'rgb(44, 139, 228)',
+        borderColor: 'rgb(100, 115, 111)',
+        fill: false,
       },
     ],
   }
 
-  return <Bar data={barData} options={{ maintainAspectRatio: false }} />
+  return <Line data={lineData} options={{ maintainAspectRatio: false }} />
 }
 
-export const HorizontalBarGraph = () => {
+export const HorizontalBarGraphh = () => {
   const [chartData, setChartData] = useState([])
 
   useEffect(() => {
-    fetchData(`http://localhost:8000/dashboards/user-role-stats/`)
+    fetchData(`http://localhost:8000/dashboards/usuarios-rol-por-obra/`)
       .then((data) => {
         console.log('HorizontalBarGraph data:', data)
         setChartData(data)
@@ -197,11 +270,13 @@ export const HorizontalBarGraph = () => {
   }, [])
 
   const horizontalBarData = {
-    labels: chartData.map((item) => item.tipo_usuario || ''),
+    labels: chartData.map((item) => item.obra),
     datasets: [
       {
         label: 'Cantidad de Usuario',
-        data: chartData.map((item) => item.count),
+        data: chartData.map((item) =>
+          item.personal_por_rol.map((item) => item.count),
+        ),
         backgroundColor: 'rgb(224, 155, 100)',
         borderColor: '#040802',
         borderWidth: 1,
@@ -215,4 +290,164 @@ export const HorizontalBarGraph = () => {
   }
 
   return <Bar data={horizontalBarData} options={options} />
+}
+
+export const BarGraphh = () => {
+  const [chartData, setChartData] = useState([])
+
+  useEffect(() => {
+    fetchData(
+      `http://localhost:8000/dashboards/obras-mayor-cantidad-tareas-finalizadas/`,
+    )
+      .then((data) => {
+        console.log('BarGraph data:', data)
+        setChartData(data)
+      })
+      .catch((error) => {
+        console.error('Error fetching BarGraph data:', error)
+      })
+  }, [])
+
+  const barData = {
+    labels: chartData.map((item) => item.nombre || ''),
+    datasets: [
+      {
+        label: 'Traes Finalizadas',
+        data: chartData.map((item) => item.num_tareas_finalizadas),
+        backgroundColor: 'rgb(4, 200, 2)',
+        borderColor: '#60A5FA',
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  return <Bar data={barData} options={{ maintainAspectRatio: false }} />
+}
+
+export const PieGraphh = () => {
+  const [chartData, setChartData] = useState([])
+
+  useEffect(() => {
+    fetchData(
+      `http://localhost:8000/dashboards/obras-menor-cantidad-tareas-finalizadas/`,
+    ).then((data) => {
+      console.log('PieGraph data:', data)
+      setChartData(data)
+    })
+  }, [])
+
+  const pieData = {
+    labels: chartData.map((item) => item.nombre),
+    datasets: [
+      {
+        label: 'Cantidad de Personal',
+        data: chartData.map((item) => item.num_tareas_finalizadas),
+        backgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#8B5CF6',
+          '#EC4899',
+          '#2D3748',
+          '#4FD1C5',
+          '#F6E05E',
+          '#D53F8C',
+          '#3AE374',
+          '#FF8C00',
+          '#00FA9A',
+          '#FF4500',
+          '#1E90FF',
+          '#FFD700',
+        ],
+        borderColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#8B5CF6',
+          '#EC4899',
+          '#2D3748',
+          '#4FD1C5',
+          '#F6E05E',
+          '#D53F8C',
+          '#3AE374',
+          '#FF8C00',
+          '#00FA9A',
+          '#FF4500',
+          '#1E90FF',
+          '#FFD700',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  const options = {
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const total = context.dataset.data.reduce(
+              (acc, value) => acc + value,
+              0,
+            )
+            const currentValue = context.raw
+            const percentage = ((currentValue / total) * 100).toFixed(2)
+            return `${context.label}: ${percentage}%`
+          },
+        },
+      },
+    },
+  }
+
+  return <Pie data={pieData} options={options} />
+}
+
+//Capataz
+
+export const PieeGraphh = () => {
+  const [chartData, setChartData] = useState([])
+
+  useEffect(() => {
+    fetchData(
+      `http://localhost:8000/dashboards/obras-mayor-cantidad-personal/`,
+    ).then((data) => {
+      console.log('PieGraph data:', data)
+      setChartData(data)
+    })
+  }, [])
+
+  const pieData = {
+    labels: chartData.map((item) => item.nombre),
+    datasets: [
+      {
+        label: 'Cantidad de Personal',
+        data: chartData.map((item) => item.num_personal),
+        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8B5CF6'],
+        borderColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8B5CF6'],
+        borderWidth: 1,
+      },
+    ],
+  }
+
+  const options = {
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const total = context.dataset.data.reduce(
+              (acc, value) => acc + value,
+              0,
+            )
+            const currentValue = context.raw
+            const percentage = ((currentValue / total) * 100).toFixed(2)
+            return `${context.label}: ${percentage}%`
+          },
+        },
+      },
+    },
+  }
+
+  return <Pie data={pieData} options={options} />
 }

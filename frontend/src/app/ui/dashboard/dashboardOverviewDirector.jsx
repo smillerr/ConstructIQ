@@ -1,10 +1,9 @@
 import React from 'react'
 import {
-  BarGraph,
-  HorizontalBarGraph,
-  LineGraph,
+  HorizontalBarGraphh,
   LineGraphh,
-  PieGraph,
+  BarGraphh,
+  PieGraphh,
 } from './graphic'
 
 const DashboardOvervIew = () => {
@@ -15,30 +14,25 @@ const DashboardOvervIew = () => {
           <div className="grid grid-cols-2 gap-8">
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-square">
-                <PieGraph />
+                <PieGraphh />
               </div>
               <h2 className="text-xl font-semibold mt-4">Gráfico Circular</h2>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-video">
-                <BarGraph />
+                <BarGraphh />
               </div>
               <h2 className="text-xl font-semibold mt-4">Gráfico de Barras</h2>
             </div>
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-video">
-                <HorizontalBarGraph />
+                <HorizontalBarGraphh />
               </div>
               <h2 className="text-xl font-semibold mt-4">
                 Gráfico de Barras Horizontales
               </h2>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
-              <div className="w-full h-64 aspect-auto">
-                <LineGraph />
-              </div>
-              <h2 className="text-xl font-semibold mt-4">Gráfico de Líneas</h2>
-            </div>
+
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-auto">
                 <LineGraphh />

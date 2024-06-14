@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  BarGraph,
-  HorizontalBarGraph,
-  LineGraph,
-  LineGraphh,
-  PieGraph,
-} from './graphic'
+import { BarGraph, HorizontalBarGraph, LineGraph, PieGraph } from './graphic'
 
 const DashboardOvervIew = () => {
   return (
@@ -36,12 +30,6 @@ const DashboardOvervIew = () => {
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-auto">
                 <LineGraph />
-              </div>
-              <h2 className="text-xl font-semibold mt-4">Gráfico de Líneas</h2>
-            </div>
-            <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
-              <div className="w-full h-64 aspect-auto">
-                <LineGraphh />
               </div>
               <h2 className="text-xl font-semibold mt-4">Gráfico de Líneas</h2>
             </div>
