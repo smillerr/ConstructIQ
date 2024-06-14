@@ -1,10 +1,5 @@
 import React from 'react'
-import {
-  RingChart,
-  BarGraph,
-  HorizontalBarGraph,
-  LineGraph,
-} from '@/ui/dashboard/graphic'
+import { BarGraph, HorizontalBarGraph, LineGraph, PieGraph } from './graphic'
 
 const DashboardOvervIew = () => {
   return (
@@ -14,7 +9,7 @@ const DashboardOvervIew = () => {
           <div className="grid grid-cols-2 gap-8">
             <div className="bg-white rounded-lg shadow-md p-6 flex flex-col items-center">
               <div className="w-full h-64 aspect-square">
-                <RingChart />
+                <PieGraph />
               </div>
               <h2 className="text-xl font-semibold mt-4">Gráfico Circular</h2>
             </div>
