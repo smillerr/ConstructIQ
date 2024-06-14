@@ -17,7 +17,6 @@ const TaskDetail = ({ taskId, constructionId, constructionName }) => {
     }
     fetchTask()
   }, [])
-  console.log(taskId)
   return (
     <div className="flex flex-col md:flex-row">
       {!loading ? (
@@ -73,9 +72,18 @@ const TaskDetail = ({ taskId, constructionId, constructionName }) => {
           </div>
 
           <div className="flex justify-end mt-6 space-x-2">
-            <button className="bg-gray-200 text-black text-sm px-2 py-1 rounded">
+            <Link
+              href={{
+                pathname: `/home/tareas/${taskId}/editar`,
+                query: {
+                  cid: constructionId,
+                  cname: constructionName,
+                },
+              }}
+              className="bg-gray-200 text-black text-sm px-2 py-1 rounded"
+            >
               <PencilIcon className="h-5 w-5" />
-            </button>
+            </Link>
             <button className="bg-red-600 hover:bg-red-700 text-white text-sm px-2 py-1 rounded">
               <TrashIcon className="h-5 w-5" />
             </button>

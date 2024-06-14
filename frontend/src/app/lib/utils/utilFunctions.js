@@ -545,6 +545,37 @@ export const createTask = async (taskData) => {
   return
 }
 
+export const editTask = async (taskId, taskData) => {
+  const url = tasks.updateTask(taskId)
+  const method = 'PATCH'
+  const body = JSON.stringify(taskData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+export const handleEditTask = async (
+  taskData,
+  taskId,
+  relatedConstruction,
+  routingCallback,
+) => {
+  await editTask(taskId, taskData)
+  routingCallback(`/home/obras/${relatedConstruction}`)
+}
 export const handleCreateTask = async (
   taskData,
   relatedConstruction,
