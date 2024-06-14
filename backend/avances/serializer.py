@@ -30,12 +30,13 @@ class AvancesSerializer(serializers.ModelSerializer):
 
 class ImgAvanceSerializer(serializers.ModelSerializer):
     img_avance = serializers.URLField(read_only=True)
-    exif_metadata = serializers.DictField(read_only=True)
+    #exif_metadata = serializers.DictField(read_only=True)
 
     class Meta:
         model = Advancements
         fields = ['img_avance']
 
+"""
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         image_data = instance.img_avance  # Assuming img_avance stores the image URL
@@ -43,7 +44,9 @@ class ImgAvanceSerializer(serializers.ModelSerializer):
             exif_metadata = self.extract_exif_metadata(image_data)
             representation['exif_metadata'] = exif_metadata
         return representation
+"""
 
+""" 
     def extract_exif_metadata(self, image_data):
         exif_data = {}
         try:
@@ -55,3 +58,4 @@ class ImgAvanceSerializer(serializers.ModelSerializer):
             logger.error(f"Error extracting EXIF metadata: {e}")
         logger.debug(f"EXIF metadata extracted: {exif_data}")
         return exif_data
+"""
