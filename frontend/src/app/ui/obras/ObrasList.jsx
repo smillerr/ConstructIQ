@@ -71,6 +71,7 @@ const ObrasList = ({ obrasUrl }) => {
 
       <div className="px-6 py-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {sortedObras?.length === 0 && <p>Cargando obras....</p>}
           {sortedObras
             .filter((obra) => obra?.activo)
             .map((obra) => (

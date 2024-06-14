@@ -1,3 +1,4 @@
+import { advancements } from '../endpoints/advancements'
 import { auth } from '../endpoints/authentication'
 import { constructions } from '../endpoints/constructions'
 import { tasks } from '../endpoints/tasks'
@@ -616,6 +617,102 @@ export const deleteTask = async (id) => {
         Authorization: `Bearer ${access_token}`,
       },
     })
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const getAdvancement = async (id) => {
+  const url = advancements.getAdvancementById(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getAdvancements = async () => {
+  const url = advancements.getAllAdvancements
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return []
+  } catch (error) {
+    console.error('error', error)
+  }
+}
+
+export const handleCreateAvance = async (
+  avanceData,
+  relatedConstruction,
+  routingCallback,
+) => {
+  const createdAvance = await createAvance(avanceData)
+  if (createdAvance) {
+    await uploadAvancePic(createdAvance.id, avanceData?.img_avance[0])
+  }
+  routingCallback(`/home/tareas/${relatedConstruction}`)
+}
+
+export const createAvance = async (taskData) => {
+  const url = advancements.createAdvancement
+  const method = 'POST'
+  const body = JSON.stringify(taskData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const uploadAvancePic = async (id, image) => {
+  const url = advancements.uploadImage(id)
+  const method = 'POST'
+  const formData = new FormData()
+  formData.append('img_avance', image)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: formData,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
   } catch (error) {
     console.error('error', error)
   }
