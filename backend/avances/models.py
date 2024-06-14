@@ -4,6 +4,7 @@ from django.db.models import Q, JSONField
 from django.utils import timezone
 from datetime import timedelta
 
+
 class Advancements(models.Model):
 
     #id_task = models.OneToOneField(Tarea, on_delete=models.CASCADE) 
