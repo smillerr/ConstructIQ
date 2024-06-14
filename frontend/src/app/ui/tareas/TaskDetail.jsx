@@ -1,23 +1,30 @@
 'use client'
 import { badgeTaskStatusColor } from '@/lib/utils/commonStyles'
-import { getTask } from '@/lib/utils/utilFunctions'
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { getAdvancements, getTask } from '@/lib/utils/utilFunctions'
+import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import { Avatar, AvatarGroup } from '@mui/material'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import DeleteTaskModal from './DeleteTaskModal'
 import { useRouter } from 'next/navigation'
+import AvancesSection from '../avances/AvancesSection'
 
 const TaskDetail = ({ taskId, constructionId, constructionName, userType }) => {
   const router = useRouter()
   const [task, setTask] = useState(null)
+  const [avances, setAvances] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteModal, setDeleteModal] = useState(false)
   const canDelete = userType === 'Director de obra'
   useEffect(() => {
     const fetchTask = async () => {
       const taskData = await getTask(taskId)
+      const advancements = await getAdvancements(taskId)
+      const filteredAdvancements = advancements?.filter(
+        (avance) => avance.id_task === parseInt(taskId),
+      )
       setTask(taskData)
+      setAvances(filteredAdvancements)
       setLoading(false)
     }
     fetchTask()
@@ -75,6 +82,32 @@ const TaskDetail = ({ taskId, constructionId, constructionName, userType }) => {
               />
             </div>
           </div>
+          {avances?.length > 0 ? (
+            <AvancesSection
+              taskList={avances}
+              relatedConstruction={task.descripcion}
+              relatedId={taskId}
+            />
+          ) : (
+            <div className="flex justify-between items-center">
+              <h2 className="text-gray-600 font-bold ">
+                No hay avances para esta tarea
+              </h2>
+              <button className="bg-green-100 text-green-600 text-sm px-2 py-1 rounded ">
+                <Link
+                  href={{
+                    pathname: '/home/crear-avance',
+                    query: {
+                      cid: taskId,
+                      cname: task.descripcion,
+                    },
+                  }}
+                >
+                  <PlusIcon className="h-5 w-5" />
+                </Link>
+              </button>
+            </div>
+          )}
 
           <div className="flex justify-end mt-6 space-x-2">
             <Link
