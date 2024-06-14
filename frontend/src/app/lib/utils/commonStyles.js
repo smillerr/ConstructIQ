@@ -15,3 +15,18 @@ export const badgeStatusColor = (status) => {
       return ''
   }
 }
+
+export const badgeTaskStatusColor = (status) => {
+  switch (status) {
+    case 'asignada':
+      return 'bg-blue-100 text-blue-600'
+    case 'en_desarrollo':
+      return 'bg-yellow-100 text-yellow-600'
+    case 'en_revision':
+      return 'bg-orange-100 text-orange-600'
+    case 'aceptada':
+      return 'bg-green-100 text-green-600'
+    default:
+      return ''
+  }
+}

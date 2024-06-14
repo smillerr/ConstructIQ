@@ -50,7 +50,7 @@ const EditUserForm = ({ userId }) => {
       }
     }
     getUserData()
-  })
+  }, [])
   return (
     <section className="bg-white">
       <div className="container flex-grow justify-center min-h-screen px-6 mx-auto">
@@ -84,7 +84,6 @@ const EditUserForm = ({ userId }) => {
                 <input
                   id="dropzone-file"
                   type="file"
-                  className="hidden"
                   {...register('foto_perfil')}
                 />
               </label>

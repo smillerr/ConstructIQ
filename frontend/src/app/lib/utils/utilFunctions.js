@@ -1,8 +1,13 @@
 import { auth } from '../endpoints/authentication'
 import { constructions } from '../endpoints/constructions'
+import { tasks } from '../endpoints/tasks'
 import { users } from '../endpoints/users'
 import { getAccessToken, storeSessionAction } from './actions'
-
+import {
+  directorHasAccess,
+  foremanHasAccess,
+} from './authorization/constructions/permissions'
+import { foremanHasTaskAccess } from './authorization/tasks/permissions'
 export const fetchData = async (
   url,
   method = 'GET',
@@ -55,16 +60,6 @@ export const handleCreateUserForm = async (
     routingCallback('/home/usuarios')
   }
 }
-// * This function is temporary, it serves the purpose of generating a random login credential for users with no access to the system, since at the moment, the login field is required
-export const generateRandomString = () => {
-  const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  let result = ''
-  for (let i = 0; i < 10; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
-  }
-  return result
-}
 
 export const handleEditUserForm = async (
   data,
@@ -82,7 +77,12 @@ export const handleEditUserForm = async (
     delete data.login
   }
 
-  await editUser(data, routingCallback, errorCallback)
+  const editedUser = await editUser(data, errorCallback)
+  if (editedUser) {
+    if (data?.foto_perfil[0])
+      await uploadUserProfilePic(editedUser.id, data.foto_perfil[0])
+    routingCallback('/home/usuarios')
+  }
 }
 export const handleUserLogin = async (
   formData,
@@ -208,7 +208,7 @@ export const getUser = async (id) => {
   }
 }
 
-export const editUser = async (userData, routingCallback, errorCallback) => {
+export const editUser = async (userData, errorCallback) => {
   const url = users.updateUser(userData.id)
   const method = 'PATCH'
   const body = new URLSearchParams(userData)
@@ -224,7 +224,6 @@ export const editUser = async (userData, routingCallback, errorCallback) => {
     })
     if (res.ok) {
       errorCallback('')
-      routingCallback('/home/usuarios')
       return await res.json()
     }
   } catch (_) {
@@ -421,4 +420,204 @@ export const construcionUrlResolver = (tipoUsuario, id) => {
     default:
   }
   return url
+}
+export const getConstructionByDirector = async (id) => {
+  const url = constructions.getConstructionsByDirector(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+export const getConstructionByForeman = async (id) => {
+  const url = constructions.getConstructionsByForeman(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+export const getTasksByConstruction = async (id) => {
+  const url = tasks.getTaskByObra(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getTasksByForeman = async (id) => {
+  const url = tasks.getTaskByForeman(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const hasConstructionAccess = async (userType, userId, obraId) => {
+  console.log(userType, userId, obraId)
+  switch (userType) {
+    case 'Gerente':
+      return true
+    case 'Director de obra':
+      return await directorHasAccess(userId, obraId)
+    case 'Capataz de obra':
+      return await foremanHasAccess(userId, obraId)
+    default:
+      return false
+  }
+}
+
+export const hasTaskAccess = async (userType, userId, taskId) => {
+  switch (userType) {
+    case 'Gerente':
+      return true
+    case 'Director de obra':
+      return true
+    case 'Capataz de obra':
+      return await foremanHasTaskAccess(userId, taskId)
+    default:
+      return false
+  }
+}
+
+export const createTask = async (taskData) => {
+  const url = tasks.createTask
+  const method = 'POST'
+  const body = JSON.stringify(taskData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+
+export const editTask = async (taskId, taskData) => {
+  const url = tasks.updateTask(taskId)
+  const method = 'PATCH'
+  const body = JSON.stringify(taskData)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+      body,
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
+}
+export const handleEditTask = async (
+  taskData,
+  taskId,
+  relatedConstruction,
+  routingCallback,
+) => {
+  await editTask(taskId, taskData)
+  routingCallback(`/home/obras/${relatedConstruction}`)
+}
+export const handleCreateTask = async (
+  taskData,
+  relatedConstruction,
+  routingCallback,
+) => {
+  await createTask(taskData)
+  routingCallback(`/home/obras/${relatedConstruction}`)
+}
+
+export const getTask = async (id) => {
+  const url = tasks.getTaskById(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const deleteTask = async (id) => {
+  const url = tasks.deleteTask(id)
+  const method = 'DELETE'
+  const access_token = await getAccessToken()
+  try {
+    await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+      },
+    })
+  } catch (error) {
+    console.error('error', error)
+  }
+  return
 }
