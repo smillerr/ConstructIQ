@@ -9,25 +9,35 @@ import AddStaffModal from './AddStaffModal'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 import DeleteConstructionModal from './DeleteConstructionModal'
 import TasksSection from './TasksSection'
-import { editConstruction, getConstruction } from '@/lib/utils/utilFunctions'
+import {
+  editConstruction,
+  getConstruction,
+  getTasksByConstruction,
+} from '@/lib/utils/utilFunctions'
 import { badgeStatusColor } from '@/lib/utils/commonStyles'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import ImageWithFallback from '../common/ImageWithFallback'
 
 const ObraDetail = ({ obraId, userType }) => {
   const router = useRouter()
   const canDelete = userType === 'Gerente' || userType === 'Director de obra'
   const [obra, setObra] = useState(null)
+  const [tareas, setTareas] = useState([])
   const [director, setDirector] = useState(null)
   const [capataces, setCapataces] = useState([])
   const [ayudantes, setAyudantes] = useState([])
   const [peones, setPeones] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+
   const fetchObraDetails = async () => {
     try {
       const obraData = await getConstruction(obraId)
+      const taskList = await getTasksByConstruction(obraId)
+      console.log('taskList', taskList)
       setObra(obraData)
+      setTareas(taskList)
       setDirector(obraData.id_director)
       setCapataces(obraData.id_capataces)
       //Filter the staff by role
@@ -142,6 +152,7 @@ const ObraDetail = ({ obraId, userType }) => {
     }
     setModalOpen(false)
   }
+
   if (!obra)
     return <div className="mx-4">Cargando informacion de la obra...</div>
 
@@ -149,10 +160,13 @@ const ObraDetail = ({ obraId, userType }) => {
     <div className="flex flex-col md:flex-row">
       <div className="max-w-5xl mx-4 bg-white p-6 rounded shadow flex-1">
         <div className="flex mb-4">
-          <img
-            src="https://picsum.photos/500/300/?blur"
-            alt="Puente peatonal"
-            className="mr-4 h-72"
+          <ImageWithFallback
+            fallbackImage={'/default_construction.png'}
+            src={obra.img_obra ? obra.img_obra : '/default_construction.png'}
+            alt={obra.nombre}
+            width={490}
+            height={290}
+            className="h-72 object-cover"
           />
           <MapWidget
             lat={obra?.ubicacion?.latitud}
@@ -180,7 +194,13 @@ const ObraDetail = ({ obraId, userType }) => {
         <p className="mb-6 text-gray-800">
           {obra.descripcion || 'No hay descripción disponible'}
         </p>
-        <TasksSection />
+        {tareas?.length > 0 && (
+          <TasksSection
+            taskList={tareas}
+            relatedConstruction={obra.nombre}
+            relatedId={obra.id}
+          />
+        )}
         <div className="flex justify-end mt-6 space-x-2">
           <Link
             href={`/home/obras/${obraId}/editar`}
@@ -227,7 +247,7 @@ const ObraDetail = ({ obraId, userType }) => {
                           handleUserDelete(capataz.id, 'capataces')
                         }
                       >
-                        Delete
+                        Quitar
                       </button>
                     )}
                   </li>
@@ -256,7 +276,7 @@ const ObraDetail = ({ obraId, userType }) => {
                             handleUserDelete(ayudante.id, 'ayudantes')
                           }
                         >
-                          Delete
+                          Quitar
                         </button>
                       )}
                     </li>
@@ -286,7 +306,7 @@ const ObraDetail = ({ obraId, userType }) => {
                           className="text-red-600 text-sm px-2 py-1 rounded ml-2"
                           onClick={() => handleUserDelete(peon.id, 'peones')}
                         >
-                          Delete
+                          Quitar
                         </button>
                       )}
                     </li>

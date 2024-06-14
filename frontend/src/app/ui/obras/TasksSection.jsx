@@ -1,29 +1,7 @@
 import { PlusIcon } from '@heroicons/react/24/outline'
 import TaskRow from '../tareas/TaskRow'
-const tareas = [
-  {
-    id: 1,
-    name: 'Tarea 1',
-    status: 'En progreso',
-    cid: 5,
-    cname: 'Colegio Campestre',
-  },
-  {
-    id: 2,
-    name: 'Tarea 2',
-    status: 'En progreso',
-    cid: 7,
-    cname: 'Puente peatonal',
-  },
-  {
-    id: 3,
-    name: 'Tarea 3',
-    status: 'En progreso',
-    cid: 4,
-    cname: 'Casa de la cultura',
-  },
-]
-const TasksSection = () => {
+
+const TasksSection = ({ taskList, relatedConstruction, relatedId }) => {
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -34,14 +12,15 @@ const TasksSection = () => {
           <PlusIcon className="h-5 w-5" />
         </button>
       </div>
-      {tareas?.map((tarea) => (
+      {taskList?.map((tarea) => (
         <TaskRow
           key={tarea.id}
           id={tarea.id}
-          name={tarea.name}
-          status={tarea.status}
-          constructionId={tarea.cid}
-          constructionName={tarea.cname}
+          name={tarea.descripcion}
+          status={tarea.estado}
+          constructionId={relatedId}
+          constructionName={relatedConstruction}
+          personal={tarea.personal_asignado}
         />
       ))}
     </div>

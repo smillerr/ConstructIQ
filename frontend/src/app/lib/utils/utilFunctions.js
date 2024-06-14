@@ -1,5 +1,6 @@
 import { auth } from '../endpoints/authentication'
 import { constructions } from '../endpoints/constructions'
+import { tasks } from '../endpoints/tasks'
 import { users } from '../endpoints/users'
 import { getAccessToken, storeSessionAction } from './actions'
 
@@ -421,4 +422,22 @@ export const construcionUrlResolver = (tipoUsuario, id) => {
     default:
   }
   return url
+}
+export const getTasksByConstruction = async (id) => {
+  const url = tasks.getTaskByObra(id)
+  const access_token = await getAccessToken()
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+      cache: 'no-cache',
+    })
+    if (res.ok) {
+      return await res.json()
+    }
+    return {}
+  } catch (error) {
+    console.error(error)
+  }
 }

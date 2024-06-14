@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/utils/auth'
 import TaskForm from '@/ui/tareas/TaskForm'
 import { redirect } from 'next/navigation'
-export default async function CrearObra() {
+export default async function CrearTarea() {
   const session = await getSession()
   if (!session) {
     redirect('/')
